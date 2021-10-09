@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UnitPositioning : MonoBehaviour
+public class UnitPlacing : MonoBehaviour
 {
     //======================================================================================== ↓ 변수 선언부
     public Button unitPlace_Btn = null;
