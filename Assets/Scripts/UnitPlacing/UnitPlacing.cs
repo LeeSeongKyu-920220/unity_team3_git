@@ -20,10 +20,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum UnitPlacingState
+{
+    PRIMARY = 0,   // 초기 단계
+    INSTANCE,      // 유닛 생성 단계
+    PLACING,       // 유닛 배치
+    COMPLETE,      // 유닛 배치 완료 단계
+}
+
 public class UnitPlacing : MonoBehaviour
 {
     //======================================================================================== ↓ 변수 선언부
     public Button unitPlace_Btn = null;
+    private UnitPlacingState placingState = UnitPlacingState.PRIMARY;
+
 
     //======================================================================================== ↑ 변수 선언부
 
@@ -32,15 +42,25 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- Start()
     void Start()
     {
-        
+
+        // 유닛 배치 버튼 클릭 감지
+        if (unitPlace_Btn != null && unitPlace_Btn.enabled == true)
+        {
+            unitPlace_Btn.onClick.AddListener(() =>
+            {
+                SetState(UnitPlacingState.INSTANCE);            // 게임 상태 전환 (유닛 생성 단계)
+            });
+        }
+
+
     }
     //---------------------------------------------------------------------------- Start()
 
-    //---------------------------------------------------------------------------- FixedUpdate()
     // 성능 향상을 위한 FixedUpdate 사용
     void FixedUpdate()
     {
-        
+
+
     }
     //---------------------------------------------------------------------------- FixedUpdate()
     //======================================================================================== ↑ 유니티 함수 부분
@@ -49,6 +69,35 @@ public class UnitPlacing : MonoBehaviour
     //======================================================================================== ↓ 사용자 정의 함수 부분
     //---------------------------------------------------------------------------- ()
     //---------  함수
+    //---------------------------------------------------------------------------- PlacingUnit()
+    //--------- 진행 상태를 전환 시키는 함수
+    private void SetState(UnitPlacingState state)
+    {
+        // 진행 상태를 전환 (현재 INSTANCE)
+        placingState = state;
+    }
+    //---------------------------------------------------------------------------- PlacingUnit()
 
+    //---------------------------------------------------------------------------- DragUnit()
+    //--------- 스크롤뷰 영역 감지하고 스케일을 감소시킴
+    private void ChangeUnitBtnScale()
+    {
+
+    }
+
+
+    //---------------------------------------------------------------------------- DragUnit()
+    //--------- UI를 드래그 해주는 함수
+    private void DragUnitBtn(Button button)
+    {
+
+
+
+    }
+
+    private void InstanceUnit()
+    {
+
+    }
     //======================================================================================== ↑ 사용자 정의 함수 부분
 }
