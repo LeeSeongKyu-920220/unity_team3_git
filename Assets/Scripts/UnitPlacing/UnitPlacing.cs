@@ -31,8 +31,13 @@ public enum UnitPlacingState
 public class UnitPlacing : MonoBehaviour
 {
     //======================================================================================== ↓ 변수 선언부
-    public Button unitPlace_Btn = null;
+    // 배치 상태 변수
     private UnitPlacingState placingState = UnitPlacingState.PRIMARY;
+
+    // 유닛 배치 UI 관련 변수
+    public Button unitPlace_Btn = null;             // 유닛 배치 버튼
+    public RectTransform panelRect = null;
+    
 
 
     //======================================================================================== ↑ 변수 선언부
@@ -42,7 +47,6 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- Start()
     void Start()
     {
-
         // 유닛 배치 버튼 클릭 감지
         if (unitPlace_Btn != null && unitPlace_Btn.enabled == true)
         {
@@ -79,7 +83,7 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- PlacingUnit()
 
     //---------------------------------------------------------------------------- DragUnit()
-    //--------- 스크롤뷰 영역 감지하고 스케일을 감소시킴
+    //--------- 패널 영역 감지하고 스케일을 감소시킴
     private void ChangeUnitBtnScale()
     {
 
