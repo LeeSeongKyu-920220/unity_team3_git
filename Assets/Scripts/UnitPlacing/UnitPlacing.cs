@@ -36,7 +36,10 @@ public class UnitPlacing : MonoBehaviour
 
     // 유닛 배치 UI 관련 변수
     public Button unitPlace_Btn = null;             // 유닛 배치 버튼
-    public RectTransform panelRect = null;
+    public RectTransform panelRect = null;          // 유닛 배치 패널 RectTr
+    Vector4 panelVector4 = Vector4.zero;            // 유닛 배치 패널 Vector4
+
+
     
 
 
@@ -47,6 +50,11 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- Start()
     void Start()
     {
+        // 변수 캐싱
+        if (panelRect != null)
+            panelVector4 = panelRect.;
+
+
         // 유닛 배치 버튼 클릭 감지
         if (unitPlace_Btn != null && unitPlace_Btn.enabled == true)
         {
@@ -60,10 +68,13 @@ public class UnitPlacing : MonoBehaviour
     }
     //---------------------------------------------------------------------------- Start()
 
-    // 성능 향상을 위한 FixedUpdate 사용
-    void FixedUpdate()
+    // 성능 향상을 위한 LateUpdate 사용
+    void LateUpdate()
     {
+        if (placingState == UnitPlacingState.INSTANCE)
+        {
 
+        }
 
     }
     //---------------------------------------------------------------------------- FixedUpdate()
@@ -74,7 +85,7 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- ()
     //---------  함수
     //---------------------------------------------------------------------------- PlacingUnit()
-    //--------- 진행 상태를 전환 시키는 함수
+    //--------- 진행 상태를 전환시키는 함수
     private void SetState(UnitPlacingState state)
     {
         // 진행 상태를 전환 (현재 INSTANCE)
