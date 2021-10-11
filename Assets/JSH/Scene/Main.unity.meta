@@ -1,15 +1,10 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-guid: c5ba9f7b3fda03d4589870dda91a1431
-folderAsset: yes
-=======
 <<<<<<< HEAD:Assets/JSH/Scene/Main.unity.meta
 guid: b077669a4ce0c1c40ad6f0cd3e924cf7
 =======
 guid: a12d523338b56204599e2d2ceff652e5
 folderAsset: yes
 >>>>>>> upstream/main:Assets/Resources/ExplosionParticle.meta
->>>>>>> upstream/main
 DefaultImporter:
   externalObjects: {}
   userData: 
