@@ -32,7 +32,7 @@ public class UnitPlacing : MonoBehaviour
 {
     //======================================================================================== ↓ 변수 선언부
     // 배치 상태 변수
-    private UnitPlacingState placingState = UnitPlacingState.PRIMARY;
+    [HideInInspector] public UnitPlacingState placingState = UnitPlacingState.PRIMARY;
 
     // 유닛 배치 UI 관련 변수
     public Button unitPlace_Btn = null;             // 유닛 배치 버튼
@@ -55,7 +55,7 @@ public class UnitPlacing : MonoBehaviour
         {
             unitPlace_Btn.onClick.AddListener(() =>
             {
-                SetState(UnitPlacingState.INSTANCE);            // 게임 상태 전환 (유닛 생성 단계)
+                placingState = UnitPlacingState.INSTANCE;
                 virtualUnitObj = InstanceUnit(unitPlace_Btn);   // 유닛 생성
             });
         }
@@ -73,7 +73,7 @@ public class UnitPlacing : MonoBehaviour
         // 배치 상태에서 실행되는 부분
         if(virtualUnitObj != null && placingState == UnitPlacingState.INSTANCE)
         {
-
+            Debug.Log("상태 전환");
         }
 
 
@@ -85,11 +85,7 @@ public class UnitPlacing : MonoBehaviour
 
     //---------------------------------------------------------------------------- SetState()
     //--------- 진행 상태를 전환시키는 함수
-    private void SetState(UnitPlacingState state)
-    {
-        // 진행 상태를 전환 (현재 INSTANCE)
-        placingState = state;
-    }
+
     //---------------------------------------------------------------------------- SetState()
 
     //---------------------------------------------------------------------------- OffAllUnitButton()

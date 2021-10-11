@@ -37,6 +37,9 @@ public class VirtualObjMove : MonoBehaviour
         isDragNow = false;
     }
 
+    
+
+
     private void OnCollisionStay(Collision col)
     {
         Debug.Log("충돌중");
