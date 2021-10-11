@@ -8,7 +8,6 @@ public class TankCtrl : MonoBehaviour
     Vector3 tank_Pos = Vector3.zero;    // 탱크의 좌료 저장
     Vector3 target_Pos = Vector3.zero;  // 타겟의 좌표 저장
     List<GameObject> target_List = new List<GameObject>();  // 타겟 목록 저장
-    List<GameObject> empty_List = new List<GameObject>();
     float att_Delay = 0.0f;     // 공격 딜레이 시간
     float turn_Speed = 10.0f;   // 포탑 회전 속도
     public GameObject turret_Obj = null;  // 포탑 오브젝트
@@ -80,10 +79,21 @@ public class TankCtrl : MonoBehaviour
 
         float[] target_Dist = new float[target_List.Count];
 
-        for(int ii = 0; ii < target_List.Count; ii++)
+        for(int ii = 0; ii < target_List.Count;)
         {
-            float dis = Vector3.Distance(tank_Pos, target_List[ii].transform.position);
-            target_Dist[ii] = dis;
+            if (target_List[ii] == null)    // 타겟 리스트의 값이 null 인지 확인
+            {
+                target_List.Remove(target_List[ii]);    // null 값이 저장되어 있으면 지우기
+
+                if(target_List.Count <= 0)  // null 값을 지워서 리스트가 비어있으면 함수를 빠져 나감
+                    return;
+            }
+            else
+            {
+                float dis = Vector3.Distance(tank_Pos, target_List[ii].transform.position);
+                target_Dist[ii] = dis;
+                ii++;
+            }
         }
 
         int target_Index = 0;
@@ -104,7 +114,7 @@ public class TankCtrl : MonoBehaviour
 
     public void OnTriggerEnter(Collider coll)
     {
-        if (coll.name.Contains("Enemy") == true)
+        if (coll.tag.Contains("Enemy") == true)
         {
             target_List.Add(coll.gameObject);
         }
@@ -112,16 +122,9 @@ public class TankCtrl : MonoBehaviour
 
     public void OnTriggerExit(Collider coll)
     {
-        if (coll.name.Contains("Enemy") == true)
+        if (coll.tag.Contains("Enemy") == true)
         {
             target_List.Remove(coll.gameObject);
-            Debug.Log(target_List.Count);
-            //empty_List = target_List;
-            //Debug.Log(empty_List.Count);
-            //target_List.Clear();
-            //target_List = empty_List;
-            //empty_List.Clear();
-            //Debug.Log(target_List.Count);
 
             if (target_Obj == coll.gameObject)
             {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BulletCtrl : MonoBehaviour
 {
-    [HideInInspector] public GameObject target_Obj;
+    [HideInInspector] public GameObject target_Obj = null;
     public GameObject explo_Obj = null;
     float speed = 20.0f;
     Vector3 target_Pos = Vector3.zero;
@@ -31,6 +31,7 @@ public class BulletCtrl : MonoBehaviour
         if (coll.name.Contains("Enemy") == true)
         {
             Instantiate(explo_Obj, this.transform.position, Quaternion.identity);
+            coll.GetComponent<EnemyCtrl>().Damage(25.0f);
             Destroy(this.gameObject);
         }
             
