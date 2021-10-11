@@ -8,6 +8,7 @@ public class TankCtrl : MonoBehaviour
     Vector3 tank_Pos = Vector3.zero;    // 탱크의 좌료 저장
     Vector3 target_Pos = Vector3.zero;  // 타겟의 좌표 저장
     List<GameObject> target_List = new List<GameObject>();  // 타겟 목록 저장
+    List<GameObject> empty_List = new List<GameObject>();
     float att_Delay = 0.0f;     // 공격 딜레이 시간
     float turn_Speed = 10.0f;   // 포탑 회전 속도
     public GameObject turret_Obj = null;  // 포탑 오브젝트
@@ -114,6 +115,13 @@ public class TankCtrl : MonoBehaviour
         if (coll.name.Contains("Enemy") == true)
         {
             target_List.Remove(coll.gameObject);
+            Debug.Log(target_List.Count);
+            //empty_List = target_List;
+            //Debug.Log(empty_List.Count);
+            //target_List.Clear();
+            //target_List = empty_List;
+            //empty_List.Clear();
+            //Debug.Log(target_List.Count);
 
             if (target_Obj == coll.gameObject)
             {
