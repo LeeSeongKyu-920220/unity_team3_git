@@ -41,6 +41,8 @@ public class UnitPlacing : MonoBehaviour
     // 테스트용 오브젝트
     public GameObject testObj = null;
 
+    // 유닛 드래그 앤 드롭 관련 변수
+    private GameObject virtualUnitObj = null;          // 아직 배치되지 않은 상태의 유닛 오브젝트
     //======================================================================================== ↑ 변수 선언부
 
 
@@ -54,7 +56,7 @@ public class UnitPlacing : MonoBehaviour
             unitPlace_Btn.onClick.AddListener(() =>
             {
                 SetState(UnitPlacingState.INSTANCE);            // 게임 상태 전환 (유닛 생성 단계)
-                InstanceUnit(unitPlace_Btn);                    // 유닛 생성
+                virtualUnitObj = InstanceUnit(unitPlace_Btn);   // 유닛 생성
             });
         }
 
@@ -63,13 +65,21 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- Start()
 
     // 성능 향상을 위한 LateUpdate 사용
-    void LateUpdate()
+    void Update()
     {
+        // 유닛 상태를 확인하며 모든 버튼을 꺼주는 함수 실행
+        OffAllUnitButton();
+
+        // 배치 상태에서 실행되는 부분
+        if(virtualUnitObj != null && placingState == UnitPlacingState.INSTANCE)
+        {
+
+        }
+
 
     }
     //---------------------------------------------------------------------------- FixedUpdate()
     //======================================================================================== ↑ 유니티 함수 부분
-
 
     //======================================================================================== ↓ 사용자 정의 함수 부분
 
@@ -82,25 +92,61 @@ public class UnitPlacing : MonoBehaviour
     }
     //---------------------------------------------------------------------------- SetState()
 
+    //---------------------------------------------------------------------------- OffAllUnitButton()
+    //--------- 유닛 배치 모드 시 모든 버튼을 꺼주는 함수
+    private void OffAllUnitButton()
+    {
+        if (placingState == UnitPlacingState.PRIMARY)
+            return;
+
+        else
+        {
+            // 모든 버튼을 꺼준다.
+            // for 문 이용!
+            // 아직 몇 개나 되는지 알 수 없으니 Button[] 로 만들기에는 무리가 있다....
+            // 그래도 배열로 생성해야 후에 확장성을 고려할 수 있다.
+        }
+    }
+    //---------------------------------------------------------------------------- OffAllUnitButton()
 
 
     //---------------------------------------------------------------------------- InstanceUnit()
     //--------- 유닛을 드래그 해주는 함수
     private GameObject InstanceUnit(Button button)
-    {
+    {        
+        // 테스트용 !!
+        button.enabled = false;     // 버튼 활성화 꺼줌
+     
+        // 얘는 진짜용!!
         UnitButtonInfo unitButton = button.GetComponent<UnitButtonInfo>();
 
         // 버튼에 해당하는 유닛 인스턴스
         // unitButton.InstanceUnit();
 
         // 테스트를 위한 인스턴스
-        GameObject testobj = (GameObject)Instantiate(testObj);
+        GameObject testobj = (GameObject)Instantiate(testObj);      // 여기에 testObj 대신 버튼 정보에서 유닛을 할당받아 넣어야한다.
         Vector3 targetPos = Vector3.zero;
 
-        // UI위치에 오브젝트 생성
-        targetPos = button.transform.position;
-        testObj.transform.position = targetPos;
+        //////UI위치에 오브젝트 생성
+        ////targetPos = button.transform.position;
+        ////targetPos.y += 0.5f;
+        ////testObj.transform.position = targetPos;
 
+        //// 캔버스 기준으로 생성
+        //targetPos.x = unitCanvas.transform.position.x + 5.0f;
+        //targetPos.y = 1.0f;
+        //testobj.transform.position = targetPos;
+
+        // 클릭 위치에 오브젝트 생성
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            targetPos = hit.transform.position;
+            targetPos.y = 1.5f;
+            
+            testObj.transform.position = targetPos;
+        }
         return testObj;
     }
     //---------------------------------------------------------------------------- InstanceUnit()
