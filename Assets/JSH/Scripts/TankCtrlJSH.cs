@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class TankCtrl : MonoBehaviour
+public class TankCtrlJSH : MonoBehaviour
 {
     // </ 이동 관련 변수
     float moveVelocity = 10.0f;  // 이동속도
