@@ -36,12 +36,10 @@ public class UnitPlacing : MonoBehaviour
 
     // 유닛 배치 UI 관련 변수
     public Button unitPlace_Btn = null;             // 유닛 배치 버튼
-    public RectTransform panelRect = null;          // 유닛 배치 패널 RectTr
-    Vector4 panelVector4 = Vector4.zero;            // 유닛 배치 패널 Vector4
+    public RectTransform unitCanvasRect;                     // 유닛 켄버스 Rect
 
-
-    
-
+    // 테스트용 오브젝트
+    public GameObject testObj = null;
 
     //======================================================================================== ↑ 변수 선언부
 
@@ -50,17 +48,13 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- Start()
     void Start()
     {
-        // 변수 캐싱
-        if (panelRect != null)
-            panelVector4 = panelRect.;
-
-
         // 유닛 배치 버튼 클릭 감지
         if (unitPlace_Btn != null && unitPlace_Btn.enabled == true)
         {
             unitPlace_Btn.onClick.AddListener(() =>
             {
                 SetState(UnitPlacingState.INSTANCE);            // 게임 상태 전환 (유닛 생성 단계)
+                DragUnit(unitPlace_Btn);
             });
         }
 
@@ -82,37 +76,34 @@ public class UnitPlacing : MonoBehaviour
 
 
     //======================================================================================== ↓ 사용자 정의 함수 부분
-    //---------------------------------------------------------------------------- ()
-    //---------  함수
-    //---------------------------------------------------------------------------- PlacingUnit()
+
+    //---------------------------------------------------------------------------- SetState()
     //--------- 진행 상태를 전환시키는 함수
     private void SetState(UnitPlacingState state)
     {
         // 진행 상태를 전환 (현재 INSTANCE)
         placingState = state;
     }
-    //---------------------------------------------------------------------------- PlacingUnit()
+    //---------------------------------------------------------------------------- SetState()
 
-    //---------------------------------------------------------------------------- DragUnit()
-    //--------- 패널 영역 감지하고 스케일을 감소시킴
-    private void ChangeUnitBtnScale()
-    {
-
-    }
 
 
     //---------------------------------------------------------------------------- DragUnit()
-    //--------- UI를 드래그 해주는 함수
-    private void DragUnitBtn(Button button)
+    //--------- 유닛을 드래그 해주는 함수
+    private void DragUnit(Button button)
     {
+        UnitButtonInfo unitButton = button.GetComponent<UnitButtonInfo>();
 
+        // 버튼에 해당하는 유닛 인스턴스
+        // unitButton.InstanceUnit();
 
+        // 테스트를 위한 인스턴스
+        GameObject testobj = (GameObject)Instantiate(testObj, button.transform, false);
+
+        
 
     }
+    //---------------------------------------------------------------------------- DragUnit()
 
-    private void InstanceUnit()
-    {
-
-    }
     //======================================================================================== ↑ 사용자 정의 함수 부분
 }
