@@ -36,7 +36,7 @@ public class UnitPlacing : MonoBehaviour
 
     // 유닛 배치 UI 관련 변수
     public Button unitPlace_Btn = null;             // 유닛 배치 버튼
-    public RectTransform unitCanvasRect;                     // 유닛 켄버스 Rect
+    public Canvas unitCanvas;                       // 유닛 켄버스
 
     // 테스트용 오브젝트
     public GameObject testObj = null;
@@ -54,7 +54,7 @@ public class UnitPlacing : MonoBehaviour
             unitPlace_Btn.onClick.AddListener(() =>
             {
                 SetState(UnitPlacingState.INSTANCE);            // 게임 상태 전환 (유닛 생성 단계)
-                DragUnit(unitPlace_Btn);
+                InstanceUnit(unitPlace_Btn);                    // 유닛 생성
             });
         }
 
@@ -65,10 +65,6 @@ public class UnitPlacing : MonoBehaviour
     // 성능 향상을 위한 LateUpdate 사용
     void LateUpdate()
     {
-        if (placingState == UnitPlacingState.INSTANCE)
-        {
-
-        }
 
     }
     //---------------------------------------------------------------------------- FixedUpdate()
@@ -88,9 +84,9 @@ public class UnitPlacing : MonoBehaviour
 
 
 
-    //---------------------------------------------------------------------------- DragUnit()
+    //---------------------------------------------------------------------------- InstanceUnit()
     //--------- 유닛을 드래그 해주는 함수
-    private void DragUnit(Button button)
+    private GameObject InstanceUnit(Button button)
     {
         UnitButtonInfo unitButton = button.GetComponent<UnitButtonInfo>();
 
@@ -98,12 +94,16 @@ public class UnitPlacing : MonoBehaviour
         // unitButton.InstanceUnit();
 
         // 테스트를 위한 인스턴스
-        GameObject testobj = (GameObject)Instantiate(testObj, button.transform, false);
+        GameObject testobj = (GameObject)Instantiate(testObj);
+        Vector3 targetPos = Vector3.zero;
 
-        
+        // UI위치에 오브젝트 생성
+        targetPos = button.transform.position;
+        testObj.transform.position = targetPos;
 
+        return testObj;
     }
-    //---------------------------------------------------------------------------- DragUnit()
+    //---------------------------------------------------------------------------- InstanceUnit()
 
     //======================================================================================== ↑ 사용자 정의 함수 부분
 }

@@ -820,7 +820,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitPlace_Btn: {fileID: 264592978}
-  unitCanvasRect: {fileID: 1268073698}
+  unitCanvas: {fileID: 1268073697}
   testObj: {fileID: 1583133922573973849, guid: 0530a7f2abe01ce4fa1306e4b6d0faf3, type: 3}
 --- !u!4 &1280426696
 Transform:
