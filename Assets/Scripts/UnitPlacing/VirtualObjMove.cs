@@ -41,13 +41,18 @@ public class VirtualObjMove : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {            
             targetObjPos = hit.point;
-            targetObjPos.y = 1.5f;
+            targetObjPos.y = 1.55f;
             this.transform.position = targetObjPos;
 
             // 배치 가능 구역으로 들어간다면 메테리얼을 초록색으로
             if (hit.collider.gameObject.CompareTag("AbleZone") == true && isOccupied == false)
             {
                 renderer.material = correctMtrl;
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    MakeRealObj();
+                }
             }            
 
             else
@@ -80,6 +85,12 @@ public class VirtualObjMove : MonoBehaviour
     //======================================================================================== ↓ 사용자 정의 함수 부분
     //---------------------------------------------------------------------------- ()
     //--------- 클릭시 진짜 오브젝트를 생성해주고 이 오브젝트는 파괴한다.
-    
+    private void MakeRealObj()
+    {
+        Instantiate(realObj);
+        realObj.transform.position = targetObjPos;
+        //Destroy(this.gameObject, 0.08f);        // 약간 딜레이 주고 삭제
+        // 메모리 풀링 구현해서 여기서는 꺼줘야함
+    }
 
 }
