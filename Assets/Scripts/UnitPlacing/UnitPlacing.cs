@@ -36,7 +36,7 @@ public class UnitPlacing : MonoBehaviour
 
     // 유닛 배치 UI 관련 변수
     public Button unitPlace_Btn = null;             // 유닛 배치 버튼
-    public Canvas unitCanvas;                       // 유닛 켄버스
+    // public Button[] unitButton = new Button[5];  // 5마리의  유닛을 위한 버튼
 
     // 테스트용 오브젝트
     public GameObject testObj = null;
