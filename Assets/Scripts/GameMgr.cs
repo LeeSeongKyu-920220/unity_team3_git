@@ -48,6 +48,7 @@ public class GameMgr : MonoBehaviour
                 start_Pos.y = 20;
                 GameObject obj = Instantiate(boom_Obj, start_Pos, transform.rotation);
                 obj.GetComponent<SkillBoomCtrl>().TargetSetting(target_Pick.transform.position);
+                Instantiate(pick_Obj, target_Pick.transform.position, Quaternion.Euler(90, 0, 0));
                 Destroy(target_Pick);
                 target_Pick = null;
             }
@@ -64,5 +65,6 @@ public class GameMgr : MonoBehaviour
     {
         Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         target_Pick = Instantiate(pick_Obj, pos, Quaternion.Euler(90, 0, 0));
+        target_Pick.GetComponent<EffDeathCtrl>().enabled = false;
     }
 }

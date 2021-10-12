@@ -14,10 +14,10 @@ public class TankCtrl : MonoBehaviour
     float skillCool = 0.0f;                 // 스킬 쿨타임
     // 기본 탱크 정보 변수
 
-    public GameObject target_Obj;                  // 타겟 오브젝트 저장
+    [HideInInspector] public GameObject target_Obj;                  // 타겟 오브젝트 저장
+    [HideInInspector] public List<GameObject> target_List = new List<GameObject>();  // 타겟 목록 저장
     Vector3 tank_Pos = Vector3.zero;        // 탱크의 좌료 저장
     Vector3 target_Pos = Vector3.zero;      // 타겟의 좌표 저장
-    public List<GameObject> target_List = new List<GameObject>();  // 타겟 목록 저장
     float att_Delay = 0.0f;                 // 공격 딜레이 타이머
     float skill_Delay = 0.0f;               // 스킬 딜레이 타이머
     float turn_Speed = 10.0f;               // 포탑 회전 속도
