@@ -5,13 +5,8 @@ using UnityEngine;
 public class VirtualObjMove : MonoBehaviour
 {
     //======================================================================================== ↓ 변수 선언부
-<<<<<<< HEAD
-    // 진행도 표시 오브젝트
-    public GameObject preObj = null;
-=======
     // 리얼 유닛 오브젝트
     public GameObject realObj = null;
->>>>>>> revert-4-main
 
     // 메테리얼 관련 변수   
     public Material correctMtrl = null;     // 설치가 가능하면 보여줄 메테리얼
@@ -20,17 +15,10 @@ public class VirtualObjMove : MonoBehaviour
 
     private Vector3 targetObjPos = Vector3.zero;       // 생성할 오브젝트의 위치 변수    
 
-<<<<<<< HEAD
     // 위치 조정 및 상태 변화를 위한 변수
     Ray ray = new Ray();
     RaycastHit hit = new RaycastHit();    
     bool isOccupied = false;                // 다른 물체가 있는지 확인을 위한 bool
-=======
-    Ray ray = new Ray();
-    RaycastHit hit = new RaycastHit();
-
-    bool isOccupied = false;
->>>>>>> revert-4-main
     //======================================================================================== ↑ 변수 선언부
 
 
@@ -90,11 +78,8 @@ public class VirtualObjMove : MonoBehaviour
 
 
     //======================================================================================== ↓ 사용자 정의 함수 부분
-<<<<<<< HEAD
     //---------------------------------------------------------------------------- ()
-    //--------- 클릭시 진행도 오브젝트를 생성해주고 이 오브젝트는 파괴한다.
+    //--------- 클릭시 진짜 오브젝트를 생성해주고 이 오브젝트는 파괴한다.
     
-=======
 
->>>>>>> revert-4-main
 }
