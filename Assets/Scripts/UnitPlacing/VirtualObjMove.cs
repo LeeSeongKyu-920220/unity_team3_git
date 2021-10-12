@@ -15,10 +15,10 @@ public class VirtualObjMove : MonoBehaviour
 
     private Vector3 targetObjPos = Vector3.zero;       // 생성할 오브젝트의 위치 변수    
 
+    // 위치 조정 및 상태 변화를 위한 변수
     Ray ray = new Ray();
-    RaycastHit hit = new RaycastHit();
-
-    bool isOccupied = false;
+    RaycastHit hit = new RaycastHit();    
+    bool isOccupied = false;                // 다른 물체가 있는지 확인을 위한 bool
     //======================================================================================== ↑ 변수 선언부
 
 
