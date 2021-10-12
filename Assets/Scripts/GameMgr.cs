@@ -13,6 +13,10 @@ public class GameMgr : MonoBehaviour
     public GameObject boom_Obj = null;  // 폭격기 오브젝트
     public GameObject boomS_Pos = null; // 폭격기 생성 위치
     public GameObject boomT_Pos = null; // 폭격 위치
+    public GameObject pick_Obj = null;  // 범위 표시 오브젝트
+
+    GameObject target_Pick;
+    Vector3 mouse_Pos = Vector3.zero;
 
     // Start is called before the first frame update
     void Start()
@@ -25,8 +29,40 @@ public class GameMgr : MonoBehaviour
         if (boom_Btn != null)
             boom_Btn.onClick.AddListener(() =>
             {
-                GameObject obj = Instantiate(boom_Obj, boomS_Pos.transform.position, transform.rotation);
-                obj.GetComponent<SkillBoomCtrl>().TargetSetting(boomT_Pos.transform.position);
+                SkillPickFunc();
             });
+    }
+
+    void Update()
+    {
+        if(target_Pick != null)
+        {
+            mouse_Pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouse_Pos.y = 1.0f;
+            target_Pick.transform.position = mouse_Pos;
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector3 start_Pos = target_Pick.transform.position;
+                start_Pos += new Vector3(-20, 0, -20);
+                start_Pos.y = 20;
+                GameObject obj = Instantiate(boom_Obj, start_Pos, transform.rotation);
+                obj.GetComponent<SkillBoomCtrl>().TargetSetting(target_Pick.transform.position);
+                Destroy(target_Pick);
+                target_Pick = null;
+            }
+            else if(Input.GetMouseButtonDown(1))
+            {
+                Destroy(target_Pick);
+                target_Pick = null;
+            }
+        }
+        
+    }
+
+    void SkillPickFunc()
+    {
+        Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        target_Pick = Instantiate(pick_Obj, pos, Quaternion.Euler(90, 0, 0));
     }
 }

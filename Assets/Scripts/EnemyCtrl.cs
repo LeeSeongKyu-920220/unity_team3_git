@@ -29,4 +29,33 @@ public class EnemyCtrl : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
+    #region ---------- 사정거리 충돌 체크
+
+    public void OnTriggerEnter(Collider coll)
+    {
+        if (coll.name.Contains("Tank") == true)
+        {
+            if (coll != coll.GetComponent<SphereCollider>())
+                return;
+
+            coll.GetComponent<TankCtrl>().target_List.Add(this.gameObject);
+        }
+    }
+
+    public void OnTriggerExit(Collider coll)
+    {
+        if (coll.name.Contains("Tank") == true)
+        {
+            if (coll != coll.GetComponent<SphereCollider>())
+                return;
+
+            coll.GetComponent<TankCtrl>().target_List.Remove(this.gameObject);
+
+            if (coll.GetComponent<TankCtrl>().target_Obj == this.gameObject)
+                coll.GetComponent<TankCtrl>().target_Obj = null;
+
+        }
+    }
+    #endregion
 }

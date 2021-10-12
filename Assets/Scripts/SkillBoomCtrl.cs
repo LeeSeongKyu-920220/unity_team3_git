@@ -13,6 +13,7 @@ public class SkillBoomCtrl : MonoBehaviour
     Vector3 start_Pos = Vector3.zero;
     Vector3 end_Pos = Vector3.zero;
 
+
     void Start()
     {
     }
@@ -52,15 +53,17 @@ public class SkillBoomCtrl : MonoBehaviour
     public void TargetSetting(Vector3 a_Target_Pos)
     {
         start_Pos = this.transform.position;
+        Debug.Log(start_Pos);
         target_Pos = a_Target_Pos;
+        Debug.Log(target_Pos);
         target_Pos.y = start_Pos.y;
-        end_Pos = (target_Pos - start_Pos);
+        end_Pos = target_Pos + (start_Pos - target_Pos) * -1;
         end_Pos.y = start_Pos.y;
+        Debug.Log(end_Pos);
 
         Quaternion rotation = Quaternion.LookRotation(end_Pos);
         rotation.x = 0.0f;
         rotation.z = 0.0f;
         sky_Obj.transform.rotation = rotation;
-        //sky_Obj.transform.rotation = Quaternion.Euler(0, rotation.y, 0);
     }
 }
