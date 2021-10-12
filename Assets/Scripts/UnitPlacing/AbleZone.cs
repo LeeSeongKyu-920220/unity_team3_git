@@ -27,11 +27,4 @@ public class AbleZone : MonoBehaviour
     }
 
 
-    private void OnCollisionEnter(Collision col)
-    {
-        if (col.gameObject.name == "TestObj")
-        { Debug.Log("충돌중!"); }
-            
-        //if (col.gameObject.CompareTag(""))
-    }
 }
