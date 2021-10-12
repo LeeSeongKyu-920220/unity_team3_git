@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class VirtualObjMove : MonoBehaviour
 {
+
     // 진행도 표시 오브젝트
     public GameObject preObj = null;
 
@@ -15,55 +16,39 @@ public class VirtualObjMove : MonoBehaviour
 
     private bool isDragNow = false;
 
-    private void Start()
+    Ray ray = new Ray();
+    RaycastHit hit = new RaycastHit();
+
+
+    private void Update()
     {
-        targetObjPos = this.transform.position;
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit))
+        {
+            targetObjPos = hit.point;
+            targetObjPos.y = 1.5f;
+            this.transform.position = targetObjPos;
+        }
     }
 
-    // 드래그로 움직여준다.
-    private void OnMouseDrag()
-    {
-        isDragNow = true;
-        targetObjPos.x += Input.GetAxisRaw("Mouse X") * Time.deltaTime * moveSpeed;
-        targetObjPos.z += Input.GetAxisRaw("Mouse Y") * Time.deltaTime * moveSpeed;
-        targetObjPos.y = 1.5f;
-
-        transform.position = targetObjPos;
-    }
-
-    // 더이상 드래그 하지 않을 때 확인
-    private void OnMouseUp()
-    {
-        isDragNow = false;
-    }
-
-    
 
 
-    private void OnCollisionStay(Collision col)
-    {
-        Debug.Log("충돌중");
-        //// 만약 이게 가능 존으로 간 경우
-        //if (col.gameObject.CompareTag("AbleZone"))
-        //{
-        //    Debug.Log("충돌중!");
-        //    // 머터리얼을 초록색으로 교체
-        //    this.gameObject.GetComponent<MeshRenderer>().material = correctMtrl;
 
-        //    // 마우스를 뗀다면
-        //    if (isDragNow == false)
-        //    {
-        //        Instantiate(preObj);
-        //        Destroy(this.gameObject, 0.007f);        // 약간의 딜레이를 두고 삭제
-        //    }
-        //}
+    //// 드래그로 움직여준다.
+    //private void OnMouseDrag()
+    //{
+    //    isDragNow = true;
+    //    targetObjPos.x += Input.GetAxisRaw("Mouse X") * Time.deltaTime * moveSpeed;
+    //    targetObjPos.z += Input.GetAxisRaw("Mouse Y") * Time.deltaTime * moveSpeed;
+    //    targetObjPos.y = 1.5f;
 
-        //else
-        //{
-        //    Debug.Log("이상한거랑 충돌중");
-        //    // 머터리얼을 빨강으로 교체
-        //    this.gameObject.GetComponent<MeshRenderer>().material = denyMtrl;
-        //}
-    }
+    //    transform.position = targetObjPos;
+    //}
+
+    //// 더이상 드래그 하지 않을 때 확인
+    //private void OnMouseUp()
+    //{
+    //    isDragNow = false;
+    //}
 
 }

@@ -43,6 +43,9 @@ public class UnitPlacing : MonoBehaviour
 
     // 유닛 드래그 앤 드롭 관련 변수
     private GameObject virtualUnitObj = null;          // 아직 배치되지 않은 상태의 유닛 오브젝트
+    Vector3 targetPos = Vector3.zero;
+    Ray ray = new Ray();
+    RaycastHit hit = new RaycastHit();
     //======================================================================================== ↑ 변수 선언부
 
 
@@ -71,9 +74,9 @@ public class UnitPlacing : MonoBehaviour
         OffAllUnitButton();
 
         // 배치 상태에서 실행되는 부분
-        if(virtualUnitObj != null && placingState == UnitPlacingState.INSTANCE)
+        if (placingState == UnitPlacingState.INSTANCE)
         {
-            Debug.Log("상태 전환");
+            
         }
 
 
@@ -107,7 +110,7 @@ public class UnitPlacing : MonoBehaviour
 
 
     //---------------------------------------------------------------------------- InstanceUnit()
-    //--------- 유닛을 드래그 해주는 함수
+    //--------- 유닛을 생성해주는 함수
     private GameObject InstanceUnit(Button button)
     {        
         // 테스트용 !!
@@ -121,28 +124,8 @@ public class UnitPlacing : MonoBehaviour
 
         // 테스트를 위한 인스턴스
         GameObject testobj = (GameObject)Instantiate(testObj);      // 여기에 testObj 대신 버튼 정보에서 유닛을 할당받아 넣어야한다.
-        Vector3 targetPos = Vector3.zero;
+        testObj.transform.position = button.transform.position;
 
-        //////UI위치에 오브젝트 생성
-        ////targetPos = button.transform.position;
-        ////targetPos.y += 0.5f;
-        ////testObj.transform.position = targetPos;
-
-        //// 캔버스 기준으로 생성
-        //targetPos.x = unitCanvas.transform.position.x + 5.0f;
-        //targetPos.y = 1.0f;
-        //testobj.transform.position = targetPos;
-
-        // 클릭 위치에 오브젝트 생성
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            targetPos = hit.transform.position;
-            targetPos.y = 1.5f;
-            
-            testObj.transform.position = targetPos;
-        }
         return testObj;
     }
     //---------------------------------------------------------------------------- InstanceUnit()
