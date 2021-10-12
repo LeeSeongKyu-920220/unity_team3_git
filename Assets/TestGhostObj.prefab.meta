@@ -1,12 +1,11 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:Assets/TestGhostObj.prefab.meta
-guid: c7909dcfc25910844b16b7b7eba6ade9
-PrefabImporter:
+<<<<<<< HEAD
+guid: 7391176371bde2e41a57a7ee8a8b7dac
 =======
 guid: e2483bf9813cc2e4fbce095d223d41e8
+>>>>>>> upstream/main
 folderAsset: yes
 DefaultImporter:
->>>>>>> revert-4-main:Assets/Resources/Prefab.meta
   externalObjects: {}
   userData: 
   assetBundleName: 
