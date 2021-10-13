@@ -1,0 +1,123 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Networking;           // 네트워크 사용을 위한 네임스페이스
+using SimpleJSON;                       // 심플 제이슨 사용을 위한 네임스페이스
+
+
+/*
+ ======================================================================
+    사실 서버에서 데이터를 가져오긴 하는데 만약 유저 로그인 후 초반에 데이터들을
+   Init 시키고 거기서 가져오는 것이 편리할 거 같긴 합니다.
+ ======================================================================
+ */
+
+// 추후에 데이터를 가져오기 위한 클래스 선언
+public class UnitInfo
+{
+    public int itemNo;
+    public string itemName;
+    public int itemLevel;
+    public char isBuy;
+    public float posX;
+    public float posY;
+    public string itemKind;
+    public int itemUsable;
+    public char isAttack;
+    public int userID;
+
+    public UnitInfo()
+    {
+    }
+}
+
+
+public class UnitLoad : MonoBehaviour
+{
+    // 싱글톤 활용을 위한 자기 자신 선언
+    public static UnitLoad unitLoad;
+
+    // ↓↓↓↓↓ 임시 유저 아이디
+    int userID = 0;
+
+    // 유저 정보의 리스트 ... 이것을 어떻게 활용할지는 추후에 논의
+    List<UnitInfo> userUnitInfoList = new List<UnitInfo>();
+
+    string InitURL = "http://sangku2000.dothome.co.kr/UserItem/UserItemLoad.php";
+
+    void Awake()
+    {
+        unitLoad = this;            // 싱글톤 활용을 위한 자기 자신 할당
+
+        // ↓↓↓↓↓ 임시 할당
+        userID = 1;             // 임시 유저 ID 할당 나중에 플레이어 값을 가져와야함
+                                // 글로벌 변수의 ID로 대체해야한다.
+    }
+
+    private void Start()
+    {
+        // 유저의 유닛 정보를 받아온다.
+        StartCoroutine(GetUserUnitInfo_Co());
+    }
+
+    // 유저의 유닛 정보를 DB에서 받아온다.
+    private IEnumerator GetUserUnitInfo_Co()
+    {
+        // ============================================
+        // 여기에 UserID 검사 후 reutn 부분 추가 필요
+        // =============================================
+
+        // 통신을 위한 form 작성 ... 아이디 값 송신해서 서버와 대조
+        WWWForm form = new WWWForm();
+        form.AddField("Input_user", userID);        // 유저 키값 전송
+
+        // 아이디 값 송신
+        UnityWebRequest webRequest = UnityWebRequest.Post(InitURL, form);
+        yield return webRequest.SendWebRequest();       // 데이터 수신까지 대기
+
+        // 데이터 무결성 체크
+        if (webRequest.error == null)
+        {
+            System.Text.Encoding enc = System.Text.Encoding.UTF8;   // 안드로이드 한글 깨지지 않기 위한 처리
+            string unitData = enc.GetString(webRequest.downloadHandler.data);   // 서버에서 수신한 데이터 문자열로 변환
+
+            if (unitData.Contains("Get_ItemList_Success..!") == true)
+            {
+                LoadServerInfo(unitData);
+            }
+        }
+    }
+
+    // 지금은 탱크 카운트 숫자만 받자
+    void LoadServerInfo(string strJson)
+    {
+        // PHP 정보가 불완전하면 return
+        if (strJson.Contains("ItemInfoList") == false)
+            return;
+
+        // 유저 유닛 리스트 클리어
+        userUnitInfoList.Clear();
+
+        // 지금은 유저가 보유한 유닛의 숫자만 받아오자
+        var N = JSON.Parse(strJson);
+
+        //==============================================
+        // 여기에 유저 정보를 리스트로 받는 부분 추가해야함
+        // 판단에 필요한 정보 == 1순위 유저의 고유 아이디
+        //                      2순위 공격용인지 방어용인지
+        //                      3순위 구매했는지 안했는지
+        //                      이런 검사들을 모두 거친 후 ItemUsable 값을 추출한다.
+        //==============================================
+
+        int unitUsable = 0;
+        for (int i = 0; i < N["ItemInfoList"].Count; i++)
+        {
+            unitUsable = N["ItemInfoList"][i]["itemUsable"];
+            UnitObjPool.unitObjPool.tankCountLimit[i] = unitUsable;     // 0번 == 지금 존재하는 버튼은 1개뿐이어서
+        }
+        // =============================================
+        // 실제로는 for문 이용해서 Pool의 Limit 인덱스 마다 Usable의 값을 넣어줘야 한다.
+        // =============================================
+    }
+
+}
