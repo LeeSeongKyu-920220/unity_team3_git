@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CamCtrl : MonoBehaviour
 {
-    Vector3 originPos = new Vector3(0.0f, 100.0f, 0.0f); // 초기 위치값
+    Vector3 originPos = new Vector3(0.0f, 80.0f, 0.0f); // 초기 위치값
     Vector3 originRot = new Vector3(90.0f, 0.0f, 0.0f);  // 초기 회전값
     Vector3 curPos; // 현재 위치값
     
@@ -21,8 +21,8 @@ public class CamCtrl : MonoBehaviour
     // </ Orthographic 카메라의 경우 - 줌을 카메라 컴포넌트의 Size 옵션을 이용해 확대/축소 시킨다.
     float curSize = 60.0f;     // 목표 사이즈
     float tarSize = 60.0f;     // 현재 사이즈
-    float maxSize = 60.0f;     // 최대 사이즈
-    float minSize = 20.0f;     // 최소 사이즈
+    float maxSize = 40.0f;     // 최대 사이즈
+    float minSize = 10.0f;     // 최소 사이즈
     // Orthographic 카메라의 경우 />
 
     float zoomSpeed = 3.0f; // 마우스 휠 조작에 대한 줌 인/아웃 스피드 설정값
