@@ -49,12 +49,13 @@ public class UnitObjPool : MonoBehaviour
         return newObj;
     }
 
-    public static TankCtrl GetObj(int objKind)
+    public static TankCtrl GetObj(int objKind, Vector3 setPos)
     {        
         if (unitObjPool.tankPool[objKind].Count > 0)
         {
             var obj = unitObjPool.tankPool[objKind].Dequeue();
             obj.transform.SetParent(null);
+            obj.transform.position = setPos;
             obj.gameObject.SetActive(true);
             return obj;
         }
@@ -63,6 +64,7 @@ public class UnitObjPool : MonoBehaviour
         {
             var newObj = unitObjPool.CreateNewObj(objKind);
             newObj.transform.SetParent(null);
+            newObj.transform.position = setPos;
             newObj.gameObject.SetActive(true);
             return newObj;
         }
