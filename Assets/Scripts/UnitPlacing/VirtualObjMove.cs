@@ -57,6 +57,7 @@ public class VirtualObjMove : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
+                    Debug.Log("virtual : " + this.gameObject.transform.position);
                     MakeRealObj();
                     unitPlacing.placingState = UnitPlacingState.PRIMARY;        // 상태를 다시 원래대로
                 }
@@ -76,6 +77,9 @@ public class VirtualObjMove : MonoBehaviour
         // 배치 가능 구역에 다른 물체가 있다면 설치를 못하게 해준다.
         if (col.gameObject.CompareTag("AbleZone") == false)
             isOccupied = true;
+
+        else
+            isOccupied = false;
     }
     //---------------------------------------------------------------------------- OnCollisionEnter()
 
@@ -94,9 +98,11 @@ public class VirtualObjMove : MonoBehaviour
     //--------- 클릭시 진짜 오브젝트를 생성해주고 이 오브젝트는 파괴한다.
     private void MakeRealObj()
     {
-        //UnitObjPool.GetObj(objIndex);               // 진짜 오브젝트 생산 (풀에서 꺼내옴)
-        Instantiate(realObj);                       // 임시 오브젝트 생산
-        realObj.transform.position = targetObjPos;  // 클릭 위치로 옮겨둠
+        //UnitObjPool.GetObj(objIndex);             // 진짜 오브젝트 생산 (풀에서 꺼내옴)
+
+        Destroy(this.gameObject.GetComponent<Rigidbody>());     // 원래꺼가 밀어내는 거 방지를 위해 리지드 바디 삭제        
+
+        Instantiate(realObj, this.gameObject.transform.position, this.gameObject.transform.rotation);   // 임시 오브젝트 생산
         Destroy(this.gameObject, 0.08f);            // 약간 딜레이 주고 배치용 오브젝트 삭제        
     }
 

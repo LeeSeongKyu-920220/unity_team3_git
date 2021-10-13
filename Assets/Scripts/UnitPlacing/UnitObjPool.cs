@@ -40,6 +40,10 @@ public class UnitObjPool : MonoBehaviour
     // 새 오브젝트 생성
     public TankCtrl CreateNewObj(int objKind)
     {
+        // 제한 갯수 이상이면 생성되지 않는다.
+        if (tankCountLimit[objKind] <= tankPool[objKind].Count)
+            return null;
+
         var newObj = Instantiate(unitObjPrefab[objKind], transform).GetComponent<TankCtrl>();
         newObj.gameObject.SetActive(false);
         return newObj;

@@ -120,6 +120,8 @@ public class UnitPlacing : MonoBehaviour
         // 버튼에 해당하는 유닛 인스턴스
         // unitButton.InstanceUnit();
 
+        // 여기에 갯수 파악해서 return 시키는 함수 추가해야함
+
         // 테스트를 위한 인스턴스
         GameObject testobj = (GameObject)Instantiate(testObj);      // 여기에 testObj 대신 버튼 정보에서 유닛을 할당받아 넣어야한다.
         testObj.transform.position = button.transform.position;
