@@ -36,20 +36,17 @@ public class UnitPlacing : MonoBehaviour
 
     // 유닛 배치 UI 관련 변수
     public Button unitPlace_Btn = null;             // 유닛 배치 버튼
-    // public Button[] unitButton = new Button[5];  // 5마리의  유닛을 위한 버튼
+    public Button[] unitButton = new Button[5];     // 5마리의  유닛을 위한 버튼 ... 각 버튼에 맞는 인덱스 넣어줘야 함
 
     // 테스트용 오브젝트
     public GameObject testObj = null;
 
     // 유닛 드래그 앤 드롭 관련 변수
-    private TankCtrl virtualUnitObj = null;
-    //private GameObject virtualUnitObj = null;          // 아직 배치되지 않은 상태의 유닛 오브젝트
+    //private TankCtrl virtualUnitObj = null;
+    private GameObject virtualUnitObj = null;          // 아직 배치되지 않은 상태의 유닛 오브젝트
     Vector3 targetPos = Vector3.zero;
     Ray ray = new Ray();
     RaycastHit hit = new RaycastHit();
-
-    // 유닛 생성 제한 변수
-    public int[] tankCountLimit = new int[5];           // 각 0~4번까지 해당 버튼의 인덱스와 일치시켜야한다.
 
     //======================================================================================== ↑ 변수 선언부
 
@@ -64,7 +61,8 @@ public class UnitPlacing : MonoBehaviour
             unitPlace_Btn.onClick.AddListener(() =>
             {
                 placingState = UnitPlacingState.INSTANCE;
-                virtualUnitObj = UnitObjPool.GetObj(0);  //InstanceUnit(unitPlace_Btn);   // 유닛 생성
+                virtualUnitObj = InstanceUnit(unitPlace_Btn);   // 유닛 생성
+                virtualUnitObj.GetComponent<VirtualObjMove>().objIndex = 0;     // 임시로 인덱스 할당
             });
         }
 
@@ -77,14 +75,6 @@ public class UnitPlacing : MonoBehaviour
     {
         // 유닛 상태를 확인하며 모든 버튼을 꺼주는 함수 실행
         OffAllUnitButton();
-
-        // 배치 상태에서 실행되는 부분
-        if (placingState == UnitPlacingState.INSTANCE)
-        {
-            
-        }
-
-
     }
     //---------------------------------------------------------------------------- FixedUpdate()
     //======================================================================================== ↑ 유니티 함수 부분
@@ -95,14 +85,23 @@ public class UnitPlacing : MonoBehaviour
     private void OffAllUnitButton()
     {
         if (placingState == UnitPlacingState.PRIMARY)
+        {
+            unitPlace_Btn.enabled = true;
+            //for (int i = 0; i < unitButton.Length; i++)
+            //{
+            //    if (unitButton[i].enabled == false)
+            //        unitButton[i].enabled = true;                                
+            //}
+
             return;
+        }
 
         else
         {
-            // 모든 버튼을 꺼준다.
-            // for 문 이용!
-            // 아직 몇 개나 되는지 알 수 없으니 Button[] 로 만들기에는 무리가 있다....
-            // 그래도 배열로 생성해야 후에 확장성을 고려할 수 있다.
+            //for (int i = 0; i < unitButton.Length; i++)
+            //{
+            //    unitButton[i].enabled = false;
+            //}
         }
     }
     //---------------------------------------------------------------------------- OffAllUnitButton()
