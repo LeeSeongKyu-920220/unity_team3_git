@@ -17,7 +17,11 @@ public class BulletCtrl : MonoBehaviour
     void Update()
     {
         if (target_Obj == null)
+        {
+            Destroy(this.gameObject);
             return;
+        }
+            
 
         target_Pos = target_Obj.transform.position;
         dir = target_Pos - this.transform.position;
