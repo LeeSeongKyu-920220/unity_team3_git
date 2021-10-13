@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public enum EnemyType
 {
     Enemy,
@@ -23,7 +24,7 @@ public class EnemyCtrl : MonoBehaviour
 
     void Update()
     {
-
+        
     }
 
     public void Damage(float a_Damage)
