@@ -42,10 +42,15 @@ public class UnitPlacing : MonoBehaviour
     public GameObject testObj = null;
 
     // 유닛 드래그 앤 드롭 관련 변수
-    private GameObject virtualUnitObj = null;          // 아직 배치되지 않은 상태의 유닛 오브젝트
+    private TankCtrl virtualUnitObj = null;
+    //private GameObject virtualUnitObj = null;          // 아직 배치되지 않은 상태의 유닛 오브젝트
     Vector3 targetPos = Vector3.zero;
     Ray ray = new Ray();
     RaycastHit hit = new RaycastHit();
+
+    // 유닛 생성 제한 변수
+    public int[] tankCountLimit = new int[5];           // 각 0~4번까지 해당 버튼의 인덱스와 일치시켜야한다.
+
     //======================================================================================== ↑ 변수 선언부
 
 
@@ -59,7 +64,7 @@ public class UnitPlacing : MonoBehaviour
             unitPlace_Btn.onClick.AddListener(() =>
             {
                 placingState = UnitPlacingState.INSTANCE;
-                virtualUnitObj = InstanceUnit(unitPlace_Btn);   // 유닛 생성
+                virtualUnitObj = UnitObjPool.GetObj(0);  //InstanceUnit(unitPlace_Btn);   // 유닛 생성
             });
         }
 

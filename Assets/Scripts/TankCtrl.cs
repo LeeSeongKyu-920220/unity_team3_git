@@ -12,9 +12,9 @@ public class TankCtrl : MonoBehaviour
     float curHp = 0.0f;                     // 현재체력
     float maxHp = 0.0f;                     // 최대체력
     float skillCool = 0.0f;                 // 스킬 쿨타임
-    // 기본 탱크 정보 변수
 
-    public GameObject target_Obj;                  // 타겟 오브젝트 저장
+    // 기본 탱크 정보 변수
+    public GameObject target_Obj;           // 타겟 오브젝트 저장
     Vector3 tank_Pos = Vector3.zero;        // 탱크의 좌료 저장
     Vector3 target_Pos = Vector3.zero;      // 타겟의 좌표 저장
     public List<GameObject> target_List = new List<GameObject>();  // 타겟 목록 저장

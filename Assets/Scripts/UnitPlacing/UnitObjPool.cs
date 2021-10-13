@@ -8,16 +8,17 @@ public class UnitObjPool : MonoBehaviour
     public static UnitObjPool unitObjPool;
 
     // 생성할 유닛 오브젝트
-    public GameObject[] unitObj;
+    public GameObject[] unitObj;                // 탱크 오브젝트의 순서와 일치해야한다.
 
     // 탱크 오브젝트 풀
-    private Queue<TankCtrl>[] tankPool = new Queue<TankCtrl>[5];
+    private Queue<TankCtrl>[] tankPool = new Queue<TankCtrl>[5];    // 큐 배열 .... 탱크의 인덱스와 일치 해야한다.
 
     private void Awake()
     {
-        unitObjPool = this;
+        unitObjPool = this;     // 전역변수처럼 사용하기 위한 캐싱
     }
 
+    // 새 오브젝트 생성
     public TankCtrl CreateNewObj(int objKind)
     {
         var newObj = Instantiate(unitObj[objKind], transform).GetComponent<TankCtrl>();
@@ -26,7 +27,7 @@ public class UnitObjPool : MonoBehaviour
     }
 
     public static TankCtrl GetObj(int objKind)
-    {
+    {        
         if (unitObjPool.tankPool[objKind].Count > 0)
         {
             var obj = unitObjPool.tankPool[objKind].Dequeue();
