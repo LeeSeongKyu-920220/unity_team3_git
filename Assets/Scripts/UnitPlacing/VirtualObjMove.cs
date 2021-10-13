@@ -121,7 +121,7 @@ public class VirtualObjMove : MonoBehaviour
     //--------- 클릭시 진짜 오브젝트를 생성해주고 이 오브젝트는 파괴한다.
     private void MakeRealObj()
     {
-        //UnitObjPool.GetObj(objIndex);             // 진짜 오브젝트 생산 (풀에서 꺼내옴)
+        //UnitObjPool.GetObj(objIndex, this.transform.position);             // 진짜 오브젝트 생산 (풀에서 꺼내옴)
 
         Destroy(this.gameObject.GetComponent<Rigidbody>());     // 원래꺼가 밀어내는 거 방지를 위해 리지드 바디 삭제        
 
