@@ -12,9 +12,10 @@ public class UnitObjPool : MonoBehaviour
 
     // 유닛 생성 제한 변수
     public int[] tankCountLimit = new int[5];           // 각 0~4번까지 해당 버튼의 인덱스와 일치시켜야한다.
+    
 
     // 탱크 오브젝트 풀
-    private Queue<TankCtrl>[] tankPool = new Queue<TankCtrl>[5];    // 큐 배열 .... 탱크의 인덱스와 일치 해야한다.
+    public Queue<TankCtrl>[] tankPool = new Queue<TankCtrl>[5];    // 큐 배열 .... 탱크의 인덱스와 일치 해야한다.
 
     private void Awake()
     {
