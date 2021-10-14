@@ -29,6 +29,21 @@ public class UnitInfo
     public UnitInfo()
     {
     }
+
+    public void UnitPrint()
+    {
+
+        Debug.Log("itemNo : " + itemNo);
+        Debug.Log("itemName : " + itemName);
+        Debug.Log("itemLevel : " + itemLevel);
+        Debug.Log("isBuy : " + isBuy);
+        Debug.Log("posX : " + posX);
+        Debug.Log("posY : " + posY);
+        Debug.Log("itemKind : " + itemKind);
+        Debug.Log("itemUsable : " + itemUsable);
+        Debug.Log("isAttack : " + isAttack);
+        Debug.Log("userID : " + userID);
+    }
 }
 
 /*
@@ -135,6 +150,7 @@ public class UnitLoad : MonoBehaviour
             unitInfo.itemUsable = N[i]["ItemUsable"].AsInt;
             unitInfo.isAttack = N[i]["isAttack"].AsChar;
             userUnitInfoList.Add(unitInfo);
+            unitInfo.UnitPrint();
         }
         // =============================================
         // 실제로는 for문 이용해서 Pool의 Limit 인덱스 마다 Usable의 값을 넣어줘야 한다.
