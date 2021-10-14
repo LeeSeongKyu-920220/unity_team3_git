@@ -5,25 +5,39 @@ using UnityEngine;
 public class VirtualObjMove : MonoBehaviour
 {
     //======================================================================================== ↓ 변수 선언부
+<<<<<<< Updated upstream
     // 리얼 유닛 오브젝트
     public GameObject realObj = null;                  // 임시 오브젝트 (나중에 진짜 유닛 할당 필요)
 
     // 오브젝트의 관련 변수
     [HideInInspector] public int objIndex = -1;                          // 어떤 탱크인지 알려주는 인덱스
     private Vector3 targetObjPos = Vector3.zero;       // 생성할 오브젝트의 위치 변수    
+=======
+
+    // 리얼 유닛 오브젝트
+    public GameObject realObj = null;
+>>>>>>> Stashed changes
 
     // 메테리얼 관련 변수   
     public Material correctMtrl = null;     // 설치가 가능하면 보여줄 메테리얼
     public Material denyMtrl = null;        // 설치가 안되면 보여줄 메테리얼
     private new MeshRenderer[] renderer;   // 메테리얼을 바꿔주기 위한 매쉬랜더러    
 
+<<<<<<< Updated upstream
+=======
+    private Vector3 targetObjPos = Vector3.zero;       // 생성할 오브젝트의 위치 변수    
+
+>>>>>>> Stashed changes
     // 위치 조정 및 상태 변화를 위한 변수
     Ray ray = new Ray();
     RaycastHit hit = new RaycastHit();    
     bool isOccupied = false;                // 다른 물체가 있는지 확인을 위한 bool
 
+<<<<<<< Updated upstream
     // UnitPlacing 의 상태 변화를 위한 변수
     UnitPlacing unitPlacing = null;
+=======
+>>>>>>> Stashed changes
     //======================================================================================== ↑ 변수 선언부
 
 
@@ -117,6 +131,7 @@ public class VirtualObjMove : MonoBehaviour
 
 
     //======================================================================================== ↓ 사용자 정의 함수 부분
+<<<<<<< Updated upstream
     //---------------------------------------------------------------------------- MakeRealObj()
     //--------- 클릭시 진짜 오브젝트를 생성해주고 이 오브젝트는 파괴한다.
     private void MakeRealObj()
@@ -129,5 +144,9 @@ public class VirtualObjMove : MonoBehaviour
         Instantiate(realObj, pos, this.gameObject.transform.rotation);   // 임시 오브젝트 생산
         Destroy(this.gameObject, 0.08f);            // 약간 딜레이 주고 배치용 오브젝트 삭제        
     }
+=======
+    //---------------------------------------------------------------------------- ()
+    //--------- 클릭시 진행도 오브젝트를 생성해주고 이 오브젝트는 파괴한다.
+>>>>>>> Stashed changes
 
 }
