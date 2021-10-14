@@ -11,7 +11,7 @@ public class GameMgr : MonoBehaviour
     RaycastHit hit;
     TankCtrl tankCtrl = null;
     float skill_Delay = 0.0f;
-    float skill_Time = 5.0f;
+    float skill_Time = 0.0f;
 
     public Button skill_Btn = null;  // 폭격 스킬 버튼
     public Image skill_Img = null;

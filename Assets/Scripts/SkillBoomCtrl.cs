@@ -55,15 +55,15 @@ public class SkillBoomCtrl : MonoBehaviour
         if (boom_Delay > 0.0f)
             return;
 
-        float randX = Random.Range(-3.0f, 5.0f);
-        float randZ = Random.Range(-3.0f, 5.0f);
+        float randX = Random.Range(-6.0f, 10.0f);
+        float randZ = Random.Range(-6.0f, 10.0f);
         Vector3 pos = target_Pos;
         pos.x += randX - 1;
         pos.z += randZ - 1;
         pos.y = 1.0f;
 
         Instantiate(boom_Obj, pos, sky_Obj.transform.rotation);
-        boom_Delay = 0.01f;
+        boom_Delay = 0.005f;
     }
 
     public void TargetSetting(Vector3 a_Target_Pos)

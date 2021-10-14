@@ -20,7 +20,7 @@ public class StartEndCtrl : MonoBehaviour
     float m_WaitTime = 4.0f;
 
     public Text m_PlayTimeTxt = null;
-    float m_PlayTime = 30.1f;
+    float m_PlayTime = 120.1f;
 
     [Header("게임 종료 판넬")]
     public GameObject m_GameEndPanel = null;

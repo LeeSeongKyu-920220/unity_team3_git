@@ -41,8 +41,8 @@ public class TankInfo
                     maxHp = 70.0f;
                     speed = 10.0f;
                     atk = 2.0f;
-                    attRate = 0.5f;
-                    skillCool = 2.0f;
+                    attRate = 1.5f;
+                    skillCool = 8.0f;
                     attRange = 4.0f;
                     break;
                 }

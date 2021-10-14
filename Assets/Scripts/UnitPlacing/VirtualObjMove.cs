@@ -87,7 +87,11 @@ public class VirtualObjMove : MonoBehaviour
             isOccupied = false;
 
         if (col.gameObject.CompareTag("Tank") == true)
-            isOccupied = false;
+            if (col == col.GetComponent<SphereCollider>())
+                isOccupied = false;
+            else
+                isOccupied = true;
+
     }
 
     private void OnTriggerExit(Collider col)
