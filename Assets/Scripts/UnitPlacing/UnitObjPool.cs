@@ -11,16 +11,17 @@ public class UnitObjPool : MonoBehaviour
     public GameObject[] unitObjPrefab;                // 탱크 오브젝트의 순서와 일치해야한다.
 
     // 유닛 생성 제한 변수
-    public int[] tankCountLimit = new int[5];           // 각 0~4번까지 해당 버튼의 인덱스와 일치시켜야한다.
-    
+    public static int[] tankCountLimit =  { 0,0,0,0,0 };        // 각 0~4번까지 해당 버튼의 인덱스와 일치시켜야한다. (인덱스 0 == 1번유닛)
+    public static int[] activeTankCount = { 0,0,0,0,0 };        // 활성화 되어 있는 탱크 수
 
     // 탱크 오브젝트 풀
-    public Queue<TankCtrl>[] tankPool = new Queue<TankCtrl>[5];    // 큐 배열 .... 탱크의 인덱스와 일치 해야한다.
+    Queue<TankCtrl>[] tankPool = new Queue<TankCtrl>[5];    // 큐 배열 .... 탱크의 인덱스와 일치 해야한다.
 
     private void Awake()
     {
         unitObjPool = this;     // 전역변수처럼 사용하기 위한 캐싱
-
+        
+        // ↓↓↓↓↓↓ 유닛 프리펩 추가 후 풀어줄 주석
         //// 각 유닛 갯수만큼 미리 생산해서 풀에 추가
         //for (int i = 0; i < unitObjPrefab.Length; i++)
         //{
@@ -30,8 +31,8 @@ public class UnitObjPool : MonoBehaviour
 
     void InitQueue(int objKind, int countLimit)
     {
-        // 리밋보다 3개 많게 생산
-        for (int i = 0; i < countLimit + 3; i++)
+        // 리밋만큼 생산
+        for (int i = 0; i < countLimit; i++)
         {
             tankPool[objKind].Enqueue(CreateNewObj(objKind));
         }
@@ -58,6 +59,7 @@ public class UnitObjPool : MonoBehaviour
             obj.transform.SetParent(null);
             obj.transform.position = setPos;
             obj.gameObject.SetActive(true);
+            activeTankCount[objKind]++;
             return obj;
         }
               
@@ -67,6 +69,7 @@ public class UnitObjPool : MonoBehaviour
             newObj.transform.SetParent(null);
             newObj.transform.position = setPos;
             newObj.gameObject.SetActive(true);
+            activeTankCount[objKind]++;
             return newObj;
         }
     }
@@ -74,6 +77,7 @@ public class UnitObjPool : MonoBehaviour
     public static void ReturnObj(TankCtrl tank, int objKind)
     {
         tank.gameObject.SetActive(false);
+        activeTankCount[objKind]--;
         tank.transform.SetParent(unitObjPool.transform);
         unitObjPool.tankPool[objKind].Enqueue(tank);
     }

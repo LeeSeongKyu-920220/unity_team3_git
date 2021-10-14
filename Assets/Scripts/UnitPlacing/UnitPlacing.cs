@@ -56,7 +56,9 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- Start()
     void Start()
     {
-        //unitPlaceBtn_Txt.text = "유닛 1번\n" + "(" +  + UnitObjPool.unitObjPool.tankCountLimit[0].ToString() + ")";
+        if (unitPlaceBtn_Txt != null)
+            unitPlaceBtn_Txt.text
+                = "유닛 1번\n" + "(" + UnitObjPool.activeTankCount[0].ToString()+ "/" + UnitObjPool.tankCountLimit[0].ToString() + ")";
 
         // 유닛 배치 버튼 클릭 감지
         if (unitPlace_Btn != null && unitPlace_Btn.enabled == true)

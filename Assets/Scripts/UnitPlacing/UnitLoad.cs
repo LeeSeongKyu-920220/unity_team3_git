@@ -61,12 +61,11 @@ public class UnitLoad : MonoBehaviour
         // ↓↓↓↓↓ 임시 할당
         userID = 1;             // 임시 유저 ID 할당 나중에 플레이어 값을 가져와야함
                                 // 글로벌 변수의 ID로 대체해야한다.
-    }
 
-    private void Start()
-    {
         // 유저의 유닛 정보를 받아온다.
         StartCoroutine(GetUserUnitInfo_Co());
+
+        Debug.Log(UnitObjPool.tankCountLimit[0]);
     }
 
     // 유저의 유닛 정보를 DB에서 받아온다.
@@ -121,11 +120,11 @@ public class UnitLoad : MonoBehaviour
         // 결국 생성된 JSON은 내가 구매했고 공격팀인 경우에만 추출됨
         //==============================================
 
-        UnitInfo unitInfo = new UnitInfo();
 
         // 유저 정보를 리스트로 받아온다.
         for (int i = 0; i < N.Count; i++)
         {
+            UnitInfo unitInfo = new UnitInfo();
             unitInfo.itemNo = N[i]["ItemNo"].AsInt;
             unitInfo.itemName = N[i]["ItemName"];
             unitInfo.itemLevel = N[i]["Level"].AsInt;
@@ -145,7 +144,7 @@ public class UnitLoad : MonoBehaviour
             // 유닛 유형 1인경우 == Limit 인덱스의 0번 (근데 아직 KindItem의 정확한 입력값을 모름)
             if (userUnitInfoList[i].itemKind == "unit1")
             {
-                UnitObjPool.unitObjPool.tankCountLimit[0] = userUnitInfoList[i].itemUsable;
+                UnitObjPool.tankCountLimit[0] = userUnitInfoList[i].itemUsable;
             }
 
             // 유닛 유형 2인 경우 ..... (추후에 추가)
