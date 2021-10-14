@@ -15,6 +15,7 @@ public class TankCtrl : MonoBehaviour
     float curHp = 0.0f;                     // 현재체력
     float maxHp = 0.0f;                     // 최대체력
     float skillCool = 0.0f;                 // 스킬 쿨타임
+    float attRange = 0.0f;
     // 기본 탱크 정보 변수
 
     // 기본 탱크 정보 변수
@@ -29,6 +30,7 @@ public class TankCtrl : MonoBehaviour
     public GameObject fire_Pos = null;      // 발사 위치 오브젝트
     public GameObject bullet_Obj = null;    // 총알 오브젝트
     public GameObject turret_Explo = null;  // 발사 이펙트 오브젝트
+    SphereCollider range_Coll;
 
     float h, v;
 
@@ -80,20 +82,22 @@ public class TankCtrl : MonoBehaviour
     void Start()
     {
         // 탱크 기본정보 받아오기
-        Init();
+        //Init();
         // 탱크 기본정보 받아오기
 
         movePath = new NavMeshPath();
         navAgent = this.gameObject.GetComponent<NavMeshAgent>();
         navAgent.updateRotation = false;
         beginTarPos = GameObject.Find("Begin_Tar_Pos").transform;
+        range_Coll = this.GetComponent<SphereCollider>();
+        Debug.Log(range_Coll);
         StartCoroutine(SetDestinationCo());
         Init();
     }
 
     void Update()
     {
-        if (StartEndCtrl.g_GameState != GameState.GS_Playing)
+        if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
             return;
 
         if (Input.GetKeyDown(KeyCode.Q))
@@ -148,6 +152,8 @@ public class TankCtrl : MonoBehaviour
         maxHp = tankInfo.maxHp * level;
         curHp = maxHp;
         skillCool = tankInfo.skillCool;
+        attRange = tankInfo.attRange;
+        range_Coll.radius = attRange;
         // 탱크 기본정보 받아오기
     }
     void TakeDamage(int a_Damage)
@@ -322,9 +328,9 @@ public class TankCtrl : MonoBehaviour
 
         if (mGTimer <= 0.0f)
         {
-            GameObject bullet = Instantiate(bullet_Obj, machineGun_Pos.transform.position, Quaternion.identity);
+            GameObject bullet = Instantiate(bullet_Obj, machineGun_Pos.transform.position, turret_Obj.transform.rotation);
             bullet.GetComponent<BulletCtrl>().target_Obj = target_Obj;
-            Instantiate(bullet_Obj, fire_Pos.transform.position, Quaternion.identity);
+            Instantiate(bullet_Obj, fire_Pos.transform.position, turret_Obj.transform.rotation);
             mGTimer = mGRate; // 텀 충전
             if(bulletIdx == mGBullet) // 모든 탄환을 격발하고 나면 스킬쿨타임 돌기 시작
             { 

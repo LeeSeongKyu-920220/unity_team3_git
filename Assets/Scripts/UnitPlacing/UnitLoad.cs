@@ -150,7 +150,7 @@ public class UnitLoad : MonoBehaviour
             unitInfo.itemUsable = N[i]["ItemUsable"].AsInt;
             unitInfo.isAttack = N[i]["isAttack"].AsChar;
             userUnitInfoList.Add(unitInfo);
-            unitInfo.UnitPrint();
+            //unitInfo.UnitPrint();
         }
         // =============================================
         // 실제로는 for문 이용해서 Pool의 Limit 인덱스 마다 Usable의 값을 넣어줘야 한다.

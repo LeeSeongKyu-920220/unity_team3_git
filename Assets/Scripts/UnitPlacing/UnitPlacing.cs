@@ -65,7 +65,7 @@ public class UnitPlacing : MonoBehaviour
         {
             unitPlace_Btn.onClick.AddListener(() =>
             {
-                if (StartEndCtrl.g_GameState != GameState.GS_Playing)
+                if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
                     return;
 
                 placingState = UnitPlacingState.INSTANCE;
@@ -81,7 +81,7 @@ public class UnitPlacing : MonoBehaviour
     // 성능 향상을 위한 LateUpdate 사용
     void Update()
     {
-        if (StartEndCtrl.g_GameState != GameState.GS_Playing)
+        if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
             return;
 
         // 유닛 상태를 확인하며 모든 버튼을 꺼주는 함수 실행

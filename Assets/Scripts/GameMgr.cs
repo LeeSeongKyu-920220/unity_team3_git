@@ -10,11 +10,13 @@ public class GameMgr : MonoBehaviour
     Ray a_MousePos;
     RaycastHit hit;
     TankCtrl tankCtrl = null;
+    float skill_Delay = 0.0f;
+    float skill_Time = 5.0f;
 
-    public Button boom_Btn = null;  // 폭격 스킬 버튼
+    public Button skill_Btn = null;  // 폭격 스킬 버튼
+    public Image skill_Img = null;
+    public Text skill_Txt = null;
     public GameObject boom_Obj = null;  // 폭격기 오브젝트
-    public GameObject boomS_Pos = null; // 폭격기 생성 위치
-    public GameObject boomT_Pos = null; // 폭격 위치
     public GameObject pick_Obj = null;  // 범위 표시 오브젝트
 
     GameObject target_Pick;
@@ -26,14 +28,18 @@ public class GameMgr : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
+        Application.targetFrameRate = 60;
         StartCoroutine(UpgradeInfoCo());
     }
     void Start()
     {
-        if (boom_Btn != null)
-            boom_Btn.onClick.AddListener(() =>
+        if (skill_Btn != null)
+            skill_Btn.onClick.AddListener(() =>
             {
-                if (StartEndCtrl.g_GameState != GameState.GS_Playing)
+                if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
+                    return;
+
+                if (skill_Delay > 0.0f)
                     return;
 
                 SkillPickFunc();
@@ -42,7 +48,7 @@ public class GameMgr : MonoBehaviour
 
     void Update()
     {
-        if (StartEndCtrl.g_GameState != GameState.GS_Playing)
+        if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
             return;
 
         if (target_Pick != null)
@@ -61,6 +67,7 @@ public class GameMgr : MonoBehaviour
                 Instantiate(pick_Obj, target_Pick.transform.position, Quaternion.Euler(90, 0, 0));
                 Destroy(target_Pick);
                 target_Pick = null;
+                skill_Delay = skill_Time;
             }
             else if (Input.GetMouseButtonDown(1))
             {
@@ -68,6 +75,20 @@ public class GameMgr : MonoBehaviour
                 target_Pick = null;
             }
         }
+
+        if (skill_Delay > 0.0f)
+        {
+            skill_Delay -= Time.deltaTime;
+            skill_Txt.text = skill_Delay.ToString("F1");
+            skill_Img.fillAmount = skill_Delay / skill_Time;
+        }
+
+        if (skill_Delay <= 0.0f)
+        {
+            skill_Delay = 0.0f;
+            skill_Txt.text = "";
+        }
+            
     }
         
     int g_UniqueID = 1;
@@ -104,10 +125,10 @@ public class GameMgr : MonoBehaviour
                 }
             }
 
-            for(int i =0; i< tankLevel.Length; i++)
-            {
-                Debug.Log(i+ "번째 탱크 레벨 : "+ tankLevel[i]);
-            }
+            //for(int i =0; i< tankLevel.Length; i++)
+            //{
+            //    Debug.Log(i+ "번째 탱크 레벨 : "+ tankLevel[i]);
+            //}
         }
     }
 

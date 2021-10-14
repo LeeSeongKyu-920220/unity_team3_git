@@ -13,8 +13,6 @@ public class SkillBoomCtrl : MonoBehaviour
     Vector3 target_Pos = Vector3.zero;
     Vector3 start_Pos = Vector3.zero;
     Vector3 end_Pos = Vector3.zero;
-    float speed = 5.0f;
-    float degree = 10;
 
     bool range_Bool = true;
 
