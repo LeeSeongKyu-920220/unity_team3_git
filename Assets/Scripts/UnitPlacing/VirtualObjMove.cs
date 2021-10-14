@@ -15,7 +15,7 @@ public class VirtualObjMove : MonoBehaviour
     // 메테리얼 관련 변수   
     public Material correctMtrl = null;     // 설치가 가능하면 보여줄 메테리얼
     public Material denyMtrl = null;        // 설치가 안되면 보여줄 메테리얼
-    private new MeshRenderer renderer = new MeshRenderer();   // 메테리얼을 바꿔주기 위한 매쉬랜더러    
+    private new MeshRenderer[] renderer;   // 메테리얼을 바꿔주기 위한 매쉬랜더러    
 
     // 위치 조정 및 상태 변화를 위한 변수
     Ray ray = new Ray();
@@ -32,7 +32,7 @@ public class VirtualObjMove : MonoBehaviour
     private void Start()
     {
         // 캐싱 부분
-        renderer = this.GetComponent<MeshRenderer>();       // 매쉬 랜더러 캐싱
+        renderer = this.GetComponentsInChildren<MeshRenderer>();       // 매쉬 랜더러 캐싱
         unitPlacing = GameObject.FindObjectOfType<UnitPlacing>();   // unitPlacing 캐싱
     }
     //---------------------------------------------------------------------------- Start()
@@ -40,8 +40,6 @@ public class VirtualObjMove : MonoBehaviour
     //---------------------------------------------------------------------------- Update()
     private void Update()
     {
-        Debug.Log("isOccupied = " + isOccupied);
-
         // 오브젝트가 마우스를 따라가도록 함
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit))
@@ -53,11 +51,15 @@ public class VirtualObjMove : MonoBehaviour
             // 배치 가능 구역으로 들어간다면 메테리얼을 초록색으로
             if (hit.collider.gameObject.CompareTag("AbleZone") == true && isOccupied == false)
             {
-                renderer.material = correctMtrl;
+                for(int ii = 0; ii < renderer.Length; ii++)
+                {
+                    renderer[ii].material = correctMtrl;
+                }
+                
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    Debug.Log("virtual : " + this.gameObject.transform.position);
+                    //Debug.Log("virtual : " + this.gameObject.transform.position);
                     MakeRealObj();
                     unitPlacing.placingState = UnitPlacingState.PRIMARY;        // 상태를 다시 원래대로
                 }
@@ -65,29 +67,50 @@ public class VirtualObjMove : MonoBehaviour
 
             else
             {
-                renderer.material = denyMtrl;
+                for (int ii = 0; ii < renderer.Length; ii++)
+                {
+                    renderer[ii].material = denyMtrl;
+                }
             }
         }
     }
     //---------------------------------------------------------------------------- Update()
 
-    //---------------------------------------------------------------------------- OnCollisionEnter()
-    private void OnCollisionEnter(Collision col)
+    private void OnTriggerEnter(Collider col)
     {
+        if (col.gameObject.CompareTag("Tank") == true)
+            if (col == col.transform.GetComponent<SphereCollider>())
+                return;
+
         // 배치 가능 구역에 다른 물체가 있다면 설치를 못하게 해준다.
         if (col.gameObject.CompareTag("AbleZone") == false)
             isOccupied = true;
-
         else
             isOccupied = false;
     }
+
+    private void OnTriggerExit(Collider col)
+    {
+        if (col.gameObject.CompareTag("AbleZone") == true)
+            isOccupied = false;
+    }
+
+    //---------------------------------------------------------------------------- OnCollisionEnter()
+    //private void OnCollisionEnter(Collision col)
+    //{
+    //    // 배치 가능 구역에 다른 물체가 있다면 설치를 못하게 해준다.
+    //    if (col.gameObject.CompareTag("AbleZone") == false)
+    //        isOccupied = true;
+    //    else
+    //        isOccupied = false;
+    //}
     //---------------------------------------------------------------------------- OnCollisionEnter()
 
     //---------------------------------------------------------------------------- OnCollisionExit()
-    private void OnCollisionExit(Collision col)
-    {
-        isOccupied = false;
-    }
+    //private void OnCollisionExit(Collision col)
+    //{
+    //    isOccupied = false;
+    //}
     //---------------------------------------------------------------------------- OnCollisionExit()
 
     //======================================================================================== ↑ 유니티 함수 부분

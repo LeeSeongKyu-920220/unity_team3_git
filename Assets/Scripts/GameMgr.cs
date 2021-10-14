@@ -5,14 +5,12 @@ using UnityEngine.UI;
 
 public class GameMgr : MonoBehaviour
 {
-    Ray a_MousePos;
-    RaycastHit hit;
-    TankCtrl tankCtrl = null;
+    //Ray a_MousePos;
+    //RaycastHit hit;
+    //TankCtrl tankCtrl = null;
 
     public Button boom_Btn = null;  // 폭격 스킬 버튼
     public GameObject boom_Obj = null;  // 폭격기 오브젝트
-    public GameObject boomS_Pos = null; // 폭격기 생성 위치
-    public GameObject boomT_Pos = null; // 폭격 위치
     public GameObject pick_Obj = null;  // 범위 표시 오브젝트
 
     GameObject target_Pick;

@@ -21,7 +21,6 @@ public class AbleZone : MonoBehaviour
         {
             this.gameObject.SetActive(true);
         }
-
         else
             this.gameObject.SetActive(false);
     }
