@@ -8,25 +8,30 @@ public class UnitObjPool : MonoBehaviour
     public static UnitObjPool unitObjPool;             // 싱글톤 패턴을 위한 static 선언
 
     // 생성할 유닛 오브젝트
-    public GameObject[] unitObjPrefab;                // 탱크 오브젝트의 순서와 일치해야한다.
+    public GameObject[] unitObjPrefab = new GameObject[5];                // 탱크 오브젝트의 순서와 일치해야한다.
 
     // 유닛 생성 제한 변수
     public static int[] tankCountLimit =  { 0,0,0,0,0 };        // 각 0~4번까지 해당 버튼의 인덱스와 일치시켜야한다. (인덱스 0 == 1번유닛)
     public static int[] activeTankCount = { 0,0,0,0,0 };        // 활성화 되어 있는 탱크 수
 
-    // 탱크 오브젝트 풀
-    Queue<TankCtrl>[] tankPool = new Queue<TankCtrl>[5];    // 큐 배열 .... 탱크의 인덱스와 일치 해야한다.
+    // 탱크 오브젝트 풀 배열
+    Queue<GameObject>[] tankPool = new Queue<GameObject>[5];    // 큐 배열 .... 탱크의 인덱스와 일치 해야한다.
 
     private void Awake()
+    {        
+        unitObjPool = this;     // 전역변수처럼 사용하기 위한 캐싱       
+    }
+
+    // 테스트를 위한 디버그용 Start 추가
+    private void Start()
     {
-        unitObjPool = this;     // 전역변수처럼 사용하기 위한 캐싱
-        
-        // ↓↓↓↓↓↓ 유닛 프리펩 추가 후 풀어줄 주석
-        //// 각 유닛 갯수만큼 미리 생산해서 풀에 추가
-        //for (int i = 0; i < unitObjPrefab.Length; i++)
-        //{
-        //    InitQueue(i, tankCountLimit[i]);
-        //}
+        // 각 유닛 갯수만큼 미리 생산해서 풀에 추가
+        for (int i = 0; i < unitObjPrefab.Length; i++)
+        {
+            InitQueue(i, tankCountLimit[i]);
+        }
+
+        Debug.Log(tankPool[0].ToArray());
     }
 
     void InitQueue(int objKind, int countLimit)
@@ -38,21 +43,23 @@ public class UnitObjPool : MonoBehaviour
         }
     }
 
-
     // 새 오브젝트 생성
-    public TankCtrl CreateNewObj(int objKind)
+    public GameObject CreateNewObj(int objKind)
     {
-        // 제한 갯수 이상이면 생성되지 않는다.
-        if (tankCountLimit[objKind] <= tankPool[objKind].Count)
-            return null;
-
-        var newObj = Instantiate(unitObjPrefab[objKind], transform).GetComponent<TankCtrl>();
-        newObj.gameObject.SetActive(false);
+        GameObject newObj = Instantiate(unitObjPrefab[objKind], transform);
+        newObj.SetActive(false);
         return newObj;
     }
 
-    public static TankCtrl GetObj(int objKind, Vector3 setPos)
+    /// <summary>
+    /// 유닛 오브젝트를 풀에서 불러오는 함수
+    /// </summary>
+    /// <param name="objKind">오브젝트의 종류</param>
+    /// <param name="setPos">오브젝트의 위치</param>
+    /// <returns></returns>
+    public static GameObject GetObj(int objKind, Vector3 setPos)
     {        
+        // 풀에 유닛이 존재할 경우
         if (unitObjPool.tankPool[objKind].Count > 0)
         {
             var obj = unitObjPool.tankPool[objKind].Dequeue();
@@ -62,7 +69,8 @@ public class UnitObjPool : MonoBehaviour
             activeTankCount[objKind]++;
             return obj;
         }
-              
+        
+        // 풀에 유닛이 존재하지 않을 경우 새로 생산한다.
         else
         {
             var newObj = unitObjPool.CreateNewObj(objKind);
@@ -74,7 +82,13 @@ public class UnitObjPool : MonoBehaviour
         }
     }
 
-    public static void ReturnObj(TankCtrl tank, int objKind)
+
+    /// <summary>
+    /// 유닛을 유닛 오브젝트 풀로 반환시켜주는 함수
+    /// </summary>
+    /// <param name="tank">반환시킬 탱크</param>
+    /// <param name="objKind">반환시킬 풀 인덱스</param>
+    public static void ReturnObj(GameObject tank, int objKind)
     {
         tank.gameObject.SetActive(false);
         activeTankCount[objKind]--;

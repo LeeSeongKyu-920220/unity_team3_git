@@ -35,9 +35,13 @@ public class UnitPlacing : MonoBehaviour
     [HideInInspector] public UnitPlacingState placingState = UnitPlacingState.PRIMARY;
 
     // 유닛 배치 UI 관련 변수
+    // 테스트용....
     public Button unitPlace_Btn = null;             // 유닛 배치 버튼
     public Text unitPlaceBtn_Txt = null;            // 유닛 배치 버튼의 Text
+
+    // 진짜용.....
     public Button[] unitButton = new Button[5];     // 5마리의  유닛을 위한 버튼 ... 각 버튼에 맞는 인덱스 넣어줘야 함
+    public Text[] unitButton_Txt = new Text[5];     // 5마리 유닛의 텍스트  ... 역시 인덱스에 맞게 (인덱스 0 == unit 유형 1)
 
     // 테스트용 오브젝트
     public GameObject testObj = null;
@@ -56,10 +60,6 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- Start()
     void Start()
     {
-        if (unitPlaceBtn_Txt != null)
-            unitPlaceBtn_Txt.text
-                = "유닛 1번\n" + "(" + UnitObjPool.activeTankCount[0].ToString()+ "/" + UnitObjPool.tankCountLimit[0].ToString() + ")";
-
         // 유닛 배치 버튼 클릭 감지
         if (unitPlace_Btn != null && unitPlace_Btn.enabled == true)
         {
@@ -73,8 +73,6 @@ public class UnitPlacing : MonoBehaviour
                 virtualUnitObj.GetComponent<VirtualObjMove>().objIndex = 0;     // 임시로 인덱스 할당
             });
         }
-
-
     }
     //---------------------------------------------------------------------------- Start()
 
@@ -86,6 +84,10 @@ public class UnitPlacing : MonoBehaviour
 
         // 유닛 상태를 확인하며 모든 버튼을 꺼주는 함수 실행
         OffAllUnitButton();
+
+        if (unitPlaceBtn_Txt != null)
+            unitPlaceBtn_Txt.text
+                = "Normal\n" + "(" + UnitObjPool.activeTankCount[0].ToString() + "/" + UnitObjPool.tankCountLimit[0].ToString() + ")";
     }
     //---------------------------------------------------------------------------- FixedUpdate()
     //======================================================================================== ↑ 유니티 함수 부분
