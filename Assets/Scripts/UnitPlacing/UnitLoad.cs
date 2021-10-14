@@ -31,16 +31,7 @@ public class UnitInfo
     }
 }
 
-/*
- ====================================================================================================
- 서버에서 정보를 받아오는 것도 방법이지만
- 글로벌 변수에 unit Usable(==unitCount) 가 있는 경우 그것을 받아와도 된다.
 
- 아직 UserItem 테이블의 정보를 받아오는 스크립트가 없으므로 부득이하게 만들었다.
- 만약 테이블의 정보를 받아온다면 그것을 UnitPool의 int[]인 UnitCountLimit 변수에 테이블 컬럼인 KindOfItem과 
- 인덱스를 일치시켜주면 된다. (만약 KindOfItem 이 1이라면 int[0]에 할당한다.) 유닛 종류는 최대 5종이기 때문
- ====================================================================================================
- */
 public class UnitLoad : MonoBehaviour
 {
     // 싱글톤 활용을 위한 자기 자신 선언
@@ -50,7 +41,7 @@ public class UnitLoad : MonoBehaviour
     int userID = 0;
 
     // 유저 정보의 리스트 ... 이것을 어떻게 활용할지는 추후에 논의
-    [HideInInspector] public List<UnitInfo> userUnitInfoList = new List<UnitInfo>();
+    List<UnitInfo> userUnitInfoList = new List<UnitInfo>();
 
     string InitURL = "http://sangku2000.dothome.co.kr/UserItem/UserItemLoad.php";
 
@@ -70,7 +61,6 @@ public class UnitLoad : MonoBehaviour
     }
 
     // 유저의 유닛 정보를 DB에서 받아온다.
-    // KindOfItem만 받아오자......
     private IEnumerator GetUserUnitInfo_Co()
     {
         // ============================================
@@ -101,8 +91,8 @@ public class UnitLoad : MonoBehaviour
     // 지금은 탱크 카운트 숫자만 받자
     void LoadServerInfo(string strJson)
     {
-        // 수신 받은 데이터가 불완전하면 return
-        if (strJson.Contains("Data does not exist.") == true)
+        // PHP 정보가 불완전하면 return
+        if (strJson.Contains("ItemInfoList") == false)
             return;
 
         // 유저 유닛 리스트 클리어
@@ -113,43 +103,21 @@ public class UnitLoad : MonoBehaviour
 
         //==============================================
         // 여기에 유저 정보를 리스트로 받는 부분 추가해야함
-        // 판단에 필요한 정보 ==  1순위 유저의 고유 아이디
+        // 판단에 필요한 정보 == 1순위 유저의 고유 아이디
         //                      2순위 공격용인지 방어용인지
         //                      3순위 구매했는지 안했는지
         //                      이런 검사들을 모두 거친 후 ItemUsable 값을 추출한다.
-        // ↑↑↑↑↑ 위 과정을 모두 서버에서 검사했음...
-        // 결국 생성된 JSON은 내가 구매했고 공격팀인 경우에만 추출됨
         //==============================================
 
-        UnitInfo unitInfo = new UnitInfo();
-
-        // 유저 정보를 리스트로 받아온다.
-        for (int i = 0; i < N.Count; i++)
+        int unitUsable = 0;
+        for (int i = 0; i < N["ItemInfoList"].Count; i++)
         {
-            unitInfo.itemNo = N[i]["ItemNo"].AsInt;
-            unitInfo.itemName = N[i]["ItemName"];
-            unitInfo.itemLevel = N[i]["Level"].AsInt;
-            unitInfo.isBuy = N[i]["isBuy"].AsChar;
-            unitInfo.posX = N[i]["PosX"].AsFloat;
-            unitInfo.posY = N[i]["PosY"].AsFloat;
-            unitInfo.itemKind = N[i]["KindOfItem"];
-            unitInfo.itemUsable = N[i]["ItemUsable"].AsInt;
-            unitInfo.isAttack = N[i]["isAttack"].AsChar;
-            userUnitInfoList.Add(unitInfo);
+            unitUsable = N["ItemInfoList"][i]["itemUsable"];
+            UnitObjPool.unitObjPool.tankCountLimit[i] = unitUsable;     // 0번 == 지금 존재하는 버튼은 1개뿐이어서
         }
         // =============================================
         // 실제로는 for문 이용해서 Pool의 Limit 인덱스 마다 Usable의 값을 넣어줘야 한다.
         // =============================================
-        for (int i = 0; i < userUnitInfoList.Count; i++)
-        {
-            // 유닛 유형 1인경우 == Limit 인덱스의 0번 (근데 아직 KindItem의 정확한 입력값을 모름)
-            if (userUnitInfoList[i].itemKind == "unit1")
-            {
-                UnitObjPool.unitObjPool.tankCountLimit[0] = userUnitInfoList[i].itemUsable;
-            }
-
-            // 유닛 유형 2인 경우 ..... (추후에 추가)
-        }
     }
 
 }

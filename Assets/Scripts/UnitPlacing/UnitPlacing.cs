@@ -36,7 +36,6 @@ public class UnitPlacing : MonoBehaviour
 
     // 유닛 배치 UI 관련 변수
     public Button unitPlace_Btn = null;             // 유닛 배치 버튼
-    public Text unitPlaceBtn_Txt = null;            // 유닛 배치 버튼의 Text
     public Button[] unitButton = new Button[5];     // 5마리의  유닛을 위한 버튼 ... 각 버튼에 맞는 인덱스 넣어줘야 함
 
     // 테스트용 오브젝트
@@ -56,8 +55,6 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- Start()
     void Start()
     {
-        //unitPlaceBtn_Txt.text = "유닛 1번\n" + "(" +  + UnitObjPool.unitObjPool.tankCountLimit[0].ToString() + ")";
-
         // 유닛 배치 버튼 클릭 감지
         if (unitPlace_Btn != null && unitPlace_Btn.enabled == true)
         {
