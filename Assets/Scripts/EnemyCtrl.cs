@@ -13,7 +13,7 @@ public enum EnemyType
 public class EnemyCtrl : MonoBehaviour
 {
     public Image hp_Img = null;
-    float max_Hp = 100.0f;
+    float max_Hp = 10000.0f;
     float now_Hp = 0.0f;
 
     public EnemyType m_EnemyType = EnemyType.Enemy;

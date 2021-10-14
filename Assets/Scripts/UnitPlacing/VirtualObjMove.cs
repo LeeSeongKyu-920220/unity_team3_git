@@ -49,7 +49,9 @@ public class VirtualObjMove : MonoBehaviour
             this.transform.position = targetObjPos;
 
             // 배치 가능 구역으로 들어간다면 메테리얼을 초록색으로
-            if (hit.collider.gameObject.CompareTag("AbleZone") == true && isOccupied == false)
+            if (hit.collider.gameObject.CompareTag("AbleZone") == true 
+                || hit.collider.gameObject.CompareTag("Tank") == true
+                && isOccupied == false)
             {
                 for(int ii = 0; ii < renderer.Length; ii++)
                 {
@@ -78,21 +80,19 @@ public class VirtualObjMove : MonoBehaviour
 
     private void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.CompareTag("Tank") == true)
-            if (col == col.transform.GetComponent<SphereCollider>())
-                return;
-
         // 배치 가능 구역에 다른 물체가 있다면 설치를 못하게 해준다.
         if (col.gameObject.CompareTag("AbleZone") == false)
             isOccupied = true;
         else
             isOccupied = false;
+
+        if (col.gameObject.CompareTag("Tank") == true)
+            isOccupied = false;
     }
 
     private void OnTriggerExit(Collider col)
     {
-        if (col.gameObject.CompareTag("AbleZone") == true)
-            isOccupied = false;
+        isOccupied = false;
     }
 
     //---------------------------------------------------------------------------- OnCollisionEnter()
@@ -122,10 +122,11 @@ public class VirtualObjMove : MonoBehaviour
     private void MakeRealObj()
     {
         //UnitObjPool.GetObj(objIndex, this.transform.position);             // 진짜 오브젝트 생산 (풀에서 꺼내옴)
-
+        
         Destroy(this.gameObject.GetComponent<Rigidbody>());     // 원래꺼가 밀어내는 거 방지를 위해 리지드 바디 삭제        
-
-        Instantiate(realObj, this.gameObject.transform.position, this.gameObject.transform.rotation);   // 임시 오브젝트 생산
+        Vector3 pos = this.transform.position;
+        pos.y = 1.0f;
+        Instantiate(realObj, pos, this.gameObject.transform.rotation);   // 임시 오브젝트 생산
         Destroy(this.gameObject, 0.08f);            // 약간 딜레이 주고 배치용 오브젝트 삭제        
     }
 

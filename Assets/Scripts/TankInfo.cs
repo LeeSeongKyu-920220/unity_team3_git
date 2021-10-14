@@ -12,9 +12,9 @@ public enum TankType
     Count,
 }
 
-public class TankInfo : MonoBehaviour
+public class TankInfo
 {
-    public TankType m_Type = TankType.Normal;
+    public TankType m_Type;
     public float maxHp;   // 최대체력
     public float speed;   // 이동속도
     public float atk;     // 공격력

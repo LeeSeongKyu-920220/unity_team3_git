@@ -7,7 +7,8 @@ using UnityEngine.AI;
 public class TankCtrl : MonoBehaviour
 {
     // 기본 탱크 정보 변수
-    TankType m_Type = TankType.Normal;      // 탱크타입
+    public int level = 0;
+    public TankType m_Type = TankType.Normal;      // 탱크타입
     float moveVelocity = 10.0f;             // 이동속도
     float atk = 0.0f;                       // 공격력
     float attRate = 0.0f;                   // 공격 속도
@@ -29,7 +30,6 @@ public class TankCtrl : MonoBehaviour
     public GameObject bullet_Obj = null;    // 총알 오브젝트
     public GameObject turret_Explo = null;  // 발사 이펙트 오브젝트
 
-    public Transform machineGun_Pos = null; // Speed타입차량의 기관총 트랜스폼
     float h, v;
 
     // </ 길찾기
@@ -65,14 +65,17 @@ public class TankCtrl : MonoBehaviour
     public Image hp_Img = null;
     // UI 관련 변수
 
-    TankInfo tankInfo = null;
+    TankInfo tankInfo = new TankInfo();
 
     // 유닛 특성 관련 변수
     int mGBullet = 3; // 기관총 특성이 발동될 때 격발할 탄환의 수
     int bulletIdx = 0; // 현재 격발한 탄환의 수
     float mGRate = 0.2f; // 탄환을 격발할 때 잠깐 사이의 텀
     float mGTimer = 0.0f; // 탄환 격발시 타이머
+    [Header("차량타입에 따른 변수")]
+    public Transform machineGun_Pos = null; // Speed타입차량의 기관총 트랜스폼
     public GameObject missilePrefab;
+    public GameObject barrier;
     // 유닛 특성 관련 변수
     void Start()
     {
@@ -84,11 +87,15 @@ public class TankCtrl : MonoBehaviour
         navAgent = this.gameObject.GetComponent<NavMeshAgent>();
         navAgent.updateRotation = false;
         beginTarPos = GameObject.Find("Begin_Tar_Pos").transform;
-        SetDestination(beginTarPos.position); // 최초 목적지 설정
+        StartCoroutine(SetDestinationCo());
+        Init();
     }
 
     void Update()
     {
+        if (StartEndCtrl.g_GameState != GameState.GS_Playing)
+            return;
+
         if (Input.GetKeyDown(KeyCode.Q))
             TakeDamage(20);
 
@@ -132,13 +139,13 @@ public class TankCtrl : MonoBehaviour
     void Init()
     {
         // 탱크 기본정보 받아오기
-        tankInfo = GetComponent<TankInfo>();
+        tankInfo.m_Type = m_Type;
         tankInfo.TankInit();
-        m_Type = tankInfo.m_Type;
-        atk = tankInfo.atk;
-        moveVelocity = tankInfo.speed;
+        level = GameMgr.tankLevel[(int)m_Type];
+        atk = tankInfo.atk * level;
+        moveVelocity = tankInfo.speed * level;
         attRate = tankInfo.attRate;
-        maxHp = tankInfo.maxHp;
+        maxHp = tankInfo.maxHp * level;
         curHp = maxHp;
         skillCool = tankInfo.skillCool;
         // 탱크 기본정보 받아오기
@@ -158,17 +165,18 @@ public class TankCtrl : MonoBehaviour
 
     void TankMove()
     {
-        h = Input.GetAxis("Horizontal");
-        v = Input.GetAxis("Vertical");
+        //h = Input.GetAxis("Horizontal");
+        //v = Input.GetAxis("Vertical");
 
-        //회전과 이동처리
-        this.transform.Rotate(Vector3.up * 150.0f * h * Time.deltaTime);
-        this.transform.Translate(Vector3.forward * v * 5.0f * Time.deltaTime);
+        ////회전과 이동처리
+        //this.transform.Rotate(Vector3.up * 150.0f * h * Time.deltaTime);
+        //this.transform.Translate(Vector3.forward * v * 5.0f * Time.deltaTime);
 
         if(tank_Canvas != null)
         {
             tank_Canvas.transform.rotation = Quaternion.Euler(0, 0, 0);
             Vector3 pos = this.transform.position;
+            pos.y += 0.5f;
             pos.z -= 1;
             tank_Canvas.transform.position = pos;
         }
@@ -249,7 +257,6 @@ public class TankCtrl : MonoBehaviour
         skill_Delay = skillCool;
     }
     // Solid 유닛 스킬 관련 변수
-    public GameObject barrier;
     GameObject a_Barrier = null;
     bool isBarrier = false; // 보호막이 활성화 중인지
     // Solid 유닛 스킬 관련 변수
@@ -431,7 +438,11 @@ public class TankCtrl : MonoBehaviour
     }
     // 유닛 스킬 구현 부분 ------------------------------------------------------------------------------------------------------------------------------
     #endregion
-
+    IEnumerator SetDestinationCo()
+    {
+        yield return new WaitForSeconds(0.2f);
+        SetDestination(beginTarPos.position);
+    }
     #region ---------- 배열의 최소값 체크 (제일 가까운 적 체크 용)
 
     void GetMinCheck(List<float> a_List, out int a_Min)
@@ -453,14 +464,15 @@ public class TankCtrl : MonoBehaviour
 
     public void SetDestination(Vector3 a_SetTargetVec)
     {
+
         //Debug.Log(a_SelectObj);
         // 캐릭터들의 Hp바와 닉네임바 RaycastTarget을 모두 꺼주어야 피킹이 정상작동한다.
         // 그렇지 않으면 if(IsPointerOverUIObject() == false) 에 의해 막히게 된다.
         startPos = this.transform.position; // 출발 위치
         cacLenVec = a_SetTargetVec - startPos; // 현재지점과 목표지점사이의 거리 벡터
 
-        if (cacLenVec.magnitude < 0.5f) // 근거리 피킹 스킵
-            return;
+        //if (cacLenVec.magnitude < 0.5f) // 근거리 피킹 스킵
+        //    return;
 
         // 네비게이션 메쉬 길찾기를 이용할 때 코드
         float a_PathLen = 0.0f;
@@ -521,6 +533,7 @@ public class TankCtrl : MonoBehaviour
 
         if (movePath.corners.Length < 2)
             return false;
+
 
         for (int i = 1; i < movePath.corners.Length; ++i)
         {
@@ -634,5 +647,21 @@ public class TankCtrl : MonoBehaviour
         }
         curPathIndex = 1; // 진행 인덱스 초기화
         // 피킹을 위한 동기화 부분
+    }
+
+    public void OnTriggerEnter(Collider coll)
+    {
+        if(coll.name.Contains("Enemy_Base") == true)
+        {
+            SetDestination(this.transform.position);
+        }
+    }
+
+    public void OnTriggerExit(Collider coll)
+    {
+        if (coll.name.Contains("Enemy_Base") == true)
+        {
+            SetDestination(beginTarPos.position);
+        }
     }
 }

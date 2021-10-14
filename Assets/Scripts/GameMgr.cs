@@ -2,38 +2,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SimpleJSON;
+using UnityEngine.Networking;
 
 public class GameMgr : MonoBehaviour
 {
-    //Ray a_MousePos;
-    //RaycastHit hit;
-    //TankCtrl tankCtrl = null;
+    Ray a_MousePos;
+    RaycastHit hit;
+    TankCtrl tankCtrl = null;
 
     public Button boom_Btn = null;  // 폭격 스킬 버튼
     public GameObject boom_Obj = null;  // 폭격기 오브젝트
+    public GameObject boomS_Pos = null; // 폭격기 생성 위치
+    public GameObject boomT_Pos = null; // 폭격 위치
     public GameObject pick_Obj = null;  // 범위 표시 오브젝트
 
     GameObject target_Pick;
     Vector3 mouse_Pos = Vector3.zero;
 
+    public static int[] tankLevel = {1, 1, 1, 1, 1};
+
+    string UpgradeUrl = "wjst5959.dothome.co.kr/Team/UpgradeInfo.php";
     // Start is called before the first frame update
+    private void Awake()
+    {
+        StartCoroutine(UpgradeInfoCo());
+    }
     void Start()
     {
-        // ****************************************************************************************************
-        GameObject.Find("TankRoot"); // 일단 임시로 이름으로 오브젝트 찾아 놓았습니다. 추후 수정하면 됩니다.
-
-        // -----------------
-
         if (boom_Btn != null)
             boom_Btn.onClick.AddListener(() =>
             {
+                if (StartEndCtrl.g_GameState != GameState.GS_Playing)
+                    return;
+
                 SkillPickFunc();
             });
     }
 
     void Update()
     {
-        if(target_Pick != null)
+        if (StartEndCtrl.g_GameState != GameState.GS_Playing)
+            return;
+
+        if (target_Pick != null)
         {
             mouse_Pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouse_Pos.y = 1.0f;
@@ -50,13 +62,53 @@ public class GameMgr : MonoBehaviour
                 Destroy(target_Pick);
                 target_Pick = null;
             }
-            else if(Input.GetMouseButtonDown(1))
+            else if (Input.GetMouseButtonDown(1))
             {
                 Destroy(target_Pick);
                 target_Pick = null;
             }
         }
+    }
         
+    int g_UniqueID = 1;
+    IEnumerator UpgradeInfoCo()
+    {
+        if (g_UniqueID == -1)
+            yield break;
+
+        WWWForm form = new WWWForm();
+        form.AddField("Input_user", g_UniqueID);
+
+        UnityWebRequest a_www = UnityWebRequest.Post(UpgradeUrl, form);
+        yield return a_www.SendWebRequest(); // 응답이 올때까지 대기
+
+        if(a_www.error == null) // 에러가 나지 않는다면
+        {
+            System.Text.Encoding enc = System.Text.Encoding.UTF8;
+            string sz = enc.GetString(a_www.downloadHandler.data);
+
+            if (sz.Contains("UpgradeInfo_Receive") == false )
+            {
+                yield break;
+            }
+
+            var N = JSON.Parse(sz);
+            if (N == null)
+                yield break;
+
+            for(int i = 0; i < N["kind"].Count; i++)
+            {
+                if (N["kind"] != null)
+                {
+                    tankLevel[N["kind"][i]] = N["level"][i];
+                }
+            }
+
+            for(int i =0; i< tankLevel.Length; i++)
+            {
+                Debug.Log(i+ "번째 탱크 레벨 : "+ tankLevel[i]);
+            }
+        }
     }
 
     void SkillPickFunc()

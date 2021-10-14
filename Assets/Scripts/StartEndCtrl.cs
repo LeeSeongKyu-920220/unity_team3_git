@@ -18,7 +18,7 @@ public class StartEndCtrl : MonoBehaviour
     float m_WaitTime = 4.0f;
 
     public Text m_PlayTimeTxt = null;
-    float m_PlayTime = 30.1f;
+    float m_PlayTime = 3000.1f;
 
     [Header("게임 종료 판넬")]
     public GameObject m_GameEndPanel = null;
@@ -128,6 +128,8 @@ public class StartEndCtrl : MonoBehaviour
     void ReTry()
     {
         Debug.Log("다시하기");
+        StartEndCtrl.g_GameState = GameState.GS_Ready;
+        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame");
     }
     void GotoLobby()
     {
