@@ -16,30 +16,35 @@ public class UnitObjPool : MonoBehaviour
 
     // 탱크 오브젝트 풀 배열
     Queue<GameObject>[] tankPool = new Queue<GameObject>[5];    // 큐 배열 .... 탱크의 인덱스와 일치 해야한다.
-    Queue<GameObject> tempTankPool = new Queue<GameObject>();   // 임시 큐 (큐 배열 선언시, 메모리 공간은 할당되어도 객체 할당이 없어서 필요)
+
+    GameObject testObj = null;
 
     private void Awake()
     {        
         unitObjPool = this;     // 전역변수처럼 사용하기 위한 캐싱       
     }
 
-    // 테스트를 위한 디버그용 Start 추가
     private void Start()
     {
-        // 각 유닛 갯수만큼 미리 생산해서 풀에 추가
+        // 각 유닛 미리 생산해서 풀에 추가
         for (int i = 0; i < unitObjPrefab.Length; i++)
         {
             InitQueue(i, tankCountLimit[i]);
         }
     }
 
+
+    // Queue에 오브젝트를 할당하는 함수
     void InitQueue(int objKind, int countLimit)
     {
+        // 임시 큐 (큐 배열 선언시, 메모리 공간은 할당되어도 객체 할당이 없어서 필요)
+        Queue<GameObject> tempTankPool = new Queue<GameObject>();   
+
         // 임시 탱크 큐 초기화
         tempTankPool.Clear();
 
-        // 리밋만큼 생산
-        for (int i = 0; i < countLimit; i++)
+        // 최대 제한수 보다 5개정도 여유를 주고 생산시킨다.
+        for (int i = 0; i < 2; i++)
         {
             tempTankPool.Enqueue(CreateNewObj(objKind));            
         }
@@ -48,7 +53,7 @@ public class UnitObjPool : MonoBehaviour
         tankPool[objKind] = tempTankPool;
     }
 
-    // 새 오브젝트 생성
+    // 새 오브젝트 생성하는 함수
     public GameObject CreateNewObj(int objKind)
     {
         GameObject newObj = Instantiate(unitObjPrefab[objKind], this.transform);
@@ -63,7 +68,7 @@ public class UnitObjPool : MonoBehaviour
     /// <param name="setPos">오브젝트의 위치</param>
     /// <returns></returns>
     public static GameObject GetObj(int objKind, Vector3 setPos)
-    {        
+    {
         // 풀에 유닛이 존재할 경우
         if (unitObjPool.tankPool[objKind].Count > 0)
         {
