@@ -31,7 +31,6 @@ public class UnitObjPool : MonoBehaviour
         }
     }
 
-
     // Queue에 오브젝트를 할당하는 함수
     void InitQueue(int objKind, int countLimit)
     {
