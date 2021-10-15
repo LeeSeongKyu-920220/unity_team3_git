@@ -20,7 +20,7 @@ public class TankCtrl : MonoBehaviour
 
     // 기본 탱크 정보 변수
     [HideInInspector] public GameObject target_Obj;           // 타겟 오브젝트 저장
-    [HideInInspector] public List<GameObject> target_List = new List<GameObject>();  // 타겟 목록 저장
+    //[HideInInspector] public List<GameObject> target_List = new List<GameObject>();  // 타겟 목록 저장
     Vector3 tank_Pos = Vector3.zero;        // 탱크의 좌료 저장
     Vector3 target_Pos = Vector3.zero;      // 타겟의 좌표 저장
     float att_Delay = 0.0f;                 // 공격 딜레이 타이머
@@ -94,7 +94,6 @@ public class TankCtrl : MonoBehaviour
         
         StartCoroutine(SetDestinationCo());
         Init();
-        
         //cannon_Obj.transform.eulerAngles = new Vector3(-45, 0, 0);
     }
 
@@ -109,7 +108,7 @@ public class TankCtrl : MonoBehaviour
         tank_Pos = this.transform.position;
         tank_Pos.y = 0.0f;
 
-        TankMove();
+        AgentOffsetControl();
 
         if (att_Delay > 0.0f)
             att_Delay -= Time.deltaTime;
@@ -130,7 +129,7 @@ public class TankCtrl : MonoBehaviour
             }
         }
 
-        if(target_List.Count <= 0)
+        if(GameMgr.Inst.enemy_List.Count <= 0)
         {
             if (m_Type != TankType.Cannon || skill_Delay > 0.0f) // 캐논형 타입의 차량은 스킬 사용중에는 터렛회전을 여기서 하지 않는다.
             { 
@@ -139,6 +138,8 @@ public class TankCtrl : MonoBehaviour
                 turret_Obj.transform.localEulerAngles = new Vector3(0.0f, turret_Obj.transform.localEulerAngles.y, 0.0f);
             }
         }
+
+        TankUIRotate();
         NavUpdate(); // 길찾기
         Attack();
         // 유닛특성 함수들
@@ -146,6 +147,7 @@ public class TankCtrl : MonoBehaviour
         MachineGun();
         Cannon();
         Barrier();
+
     }
 
     void Init()
@@ -164,6 +166,38 @@ public class TankCtrl : MonoBehaviour
         range_Coll.radius = attRange;
         // 탱크 기본정보 받아오기
     }
+
+    void AgentOffsetControl() // 플레이어의 발을 땅에 자연스럽게 올려 놓기 위해 에이전트의 오프셋을 조절해주는 함수
+    {
+        float baseOffset = 0.0f;
+        float curPosY = 0.0f;
+        float tarPosY = 0.0f;
+
+        curPosY = transform.position.y;
+
+        tarPosY = GetFootYPos();
+        //Debug.Log("목표지점 : " + tarPosY);
+        //Debug.Log("현재지점 : " + curPosY);
+        baseOffset = tarPosY - curPosY;
+        navAgent.baseOffset += baseOffset;
+    }
+    
+    Ray ray;
+    RaycastHit hit;
+
+    float GetFootYPos() // 현재 밟고 있는 땅의 높이 구하기
+    {
+        float a_TarPosY = 0.0f;
+        ray.origin = transform.position + new Vector3(0, 1.0f, 0);
+        ray.direction = -Vector3.up;
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Ground")))
+        {
+            a_TarPosY = hit.point.y;
+            GameObject hitObj = hit.collider.gameObject;
+        }
+        return a_TarPosY;
+    }
+
     void TakeDamage(int a_Damage)
     {
         curHp -= a_Damage;
@@ -177,7 +211,7 @@ public class TankCtrl : MonoBehaviour
 
     #region ---------- 탱크 이동 부분(임시)
 
-    void TankMove()
+    void TankUIRotate()
     {
         //h = Input.GetAxis("Horizontal");
         //v = Input.GetAxis("Vertical");
@@ -202,7 +236,7 @@ public class TankCtrl : MonoBehaviour
 
     void Attack()
     {
-        if (target_List.Count <= 0)
+        if (GameMgr.Inst.enemy_List.Count <= 0)
             return;
 
         if (att_Delay > 0.0f)
@@ -212,32 +246,53 @@ public class TankCtrl : MonoBehaviour
             return;
 
         List<float> target_Dist = new List<float>();
+        List<int> index_List = new List<int>();
         
-        for (int ii = 0; ii < target_List.Count;)
+        for (int ii = 0; ii < GameMgr.Inst.enemy_List.Count;)
         {
-            if (target_List[ii] == null)    // 타겟 리스트의 값이 null 인지 확인
+            if (GameMgr.Inst.enemy_List[ii] == null)    // 타겟 리스트의 값이 null 인지 확인
             {
-                target_List.Remove(target_List[ii]);    // null 값이 저장되어 있으면 지우기
+                GameMgr.Inst.enemy_List.Remove(GameMgr.Inst.enemy_List[ii]);    // null 값이 저장되어 있으면 지우기
 
-                if (target_List.Count <= 0)  // null 값을 지워서 리스트가 비어있으면 함수를 빠져 나감
+                if (GameMgr.Inst.enemy_List.Count <= 0)  // null 값을 지워서 리스트가 비어있으면 함수를 빠져 나감
                     return;
             }
             else
             {
-                float dis = Vector3.Distance(tank_Pos, target_List[ii].transform.position);
-                target_Dist.Add(dis);
+                float dis = Vector3.Distance(tank_Pos, GameMgr.Inst.enemy_List[ii].transform.position);
+
+                if (dis <= attRange)
+                {
+                    index_List.Add(ii);
+                    target_Dist.Add(dis);
+                }
+
                 ii++;
             }
         }
 
+        if (target_Dist.Count <= 0)
+        {
+            target_Obj = null;
+            return;
+        }
+            
+
         int target_Index = 0;
         GetMinCheck(target_Dist, out target_Index);
+        int a = index_List[target_Index];
 
-        target_Obj = target_List[target_Index];
+        target_Obj = GameMgr.Inst.enemy_List[a].gameObject;
+
+        if (target_Obj.name.Contains("Enemy_Base") == true)
+        {
+            SetDestination(this.transform.position);
+        }
+
         target_Pos = target_Obj.transform.position;
         target_Pos.y = 0.0f;
         att_Delay = attRate;
-        GameObject bullet = Instantiate(bullet_Obj, fire_Pos.transform.position, turret_Obj.transform.rotation);
+        GameObject bullet = Instantiate(bullet_Obj, fire_Pos.transform.position, fire_Pos.transform.rotation);
         bullet.GetComponent<BulletCtrl>().target_Obj = target_Obj;
         Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
     }
@@ -304,25 +359,25 @@ public class TankCtrl : MonoBehaviour
         if (m_Type != TankType.Speed)
             return;
 
-        if (target_List.Count <= 0)
+        if (GameMgr.Inst.enemy_List.Count <= 0)
             return;
 
         if (skill_Delay > 0.0f)
             return;
 
         List<float> target_Dist = new List<float>();
-        for (int ii = 0; ii < target_List.Count;)
+        for (int ii = 0; ii < GameMgr.Inst.enemy_List.Count;)
         {
-            if (target_List[ii] == null)    // 타겟 리스트의 값이 null 인지 확인
+            if (GameMgr.Inst.enemy_List[ii] == null)    // 타겟 리스트의 값이 null 인지 확인
             {
-                target_List.Remove(target_List[ii]);    // null 값이 저장되어 있으면 지우기
+                GameMgr.Inst.enemy_List.Remove(GameMgr.Inst.enemy_List[ii]);    // null 값이 저장되어 있으면 지우기
 
-                if (target_List.Count <= 0)  // null 값을 지워서 리스트가 비어있으면 함수를 빠져 나감
+                if (GameMgr.Inst.enemy_List.Count <= 0)  // null 값을 지워서 리스트가 비어있으면 함수를 빠져 나감
                     return;
             }
             else
             {
-                float dis = Vector3.Distance(tank_Pos, target_List[ii].transform.position);
+                float dis = Vector3.Distance(tank_Pos, GameMgr.Inst.enemy_List[ii].transform.position);
                 target_Dist.Add(dis);
                 ii++;
             }
@@ -330,7 +385,7 @@ public class TankCtrl : MonoBehaviour
         int target_Index = 0;
         GetMinCheck(target_Dist, out target_Index);
 
-        target_Obj = target_List[target_Index];
+        target_Obj = GameMgr.Inst.enemy_List[target_Index].gameObject;
         target_Pos = target_Obj.transform.position;
         target_Pos.y = 0.0f;
 
@@ -339,7 +394,7 @@ public class TankCtrl : MonoBehaviour
 
         if (mGTimer <= 0.0f)
         {
-            GameObject bullet = Instantiate(bullet_Obj, machineGun_Pos.transform.position, turret_Obj.transform.rotation);
+            GameObject bullet = Instantiate(bullet_Obj, machineGun_Pos.transform.position, fire_Pos.transform.rotation);
             bullet.GetComponent<BulletCtrl>().target_Obj = target_Obj;
             bullet.GetComponent<MeshRenderer>().material.SetColor("_Color",Color.red);
             Instantiate(bullet_Obj, fire_Pos.transform.position, turret_Obj.transform.rotation);
@@ -411,11 +466,14 @@ public class TankCtrl : MonoBehaviour
                 ranEnemyIdx = Random.Range(0, enemies.Length);
             }
             
+            if (enemies[ranEnemyIdx] == null) // 조준 도중에 적이 파괴됐다면
+            {
+                ranEnemyIdx = -1;
+                return;
+            }
             Quaternion a_TargetDir = Quaternion.LookRotation(enemies[ranEnemyIdx].transform.position - transform.position);
             turret_Obj.transform.rotation = Quaternion.Slerp(turret_Obj.transform.rotation, a_TargetDir, Time.deltaTime * 10.0f);
-            //cannon_Obj.transform.localEulerAngles = Vector3.Lerp(cannon_Obj.transform.localEulerAngles, 
-            //                    new Vector3(315.0f, cannon_Obj.transform.localEulerAngles.y, cannon_Obj.transform.localEulerAngles.z),
-            //                    Time.deltaTime * 10.0f);
+            
             Vector3 dir = new Vector3(0, 0.5f, 0.5f);
             cannon_Obj.transform.localRotation = Quaternion.LookRotation(dir);
 
@@ -453,85 +511,6 @@ public class TankCtrl : MonoBehaviour
         {
             StartCoroutine(ShootImp());
         }
-        //------------------------------------------------------------------------------------------------------------------
-        //if (isShot == false)
-        //{
-        //    GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-
-        //    if (enemies.Length < 1)
-        //        return;
-
-        //    int ranIdx = Random.Range(0, enemies.Length);
-        //    targetPos2 = enemies[ranIdx].transform.position;
-        //    missile = Instantiate(missilePrefab, fire_Pos.transform.position, turret_Obj.transform.rotation);
-        //    missile.GetComponent<MissileCtrl>().target_Obj = enemies[ranIdx];
-        //    Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
-        //    isShot = true;
-        //}
-
-        //float targetDistance = Vector3.Distance(missile.transform.position, targetPos2);
-        //float velocity = targetDistance / (Mathf.Sin(2 * firingAngle * Mathf.Deg2Rad) / gravity);
-        //float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(firingAngle * Mathf.Deg2Rad);
-        //float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(firingAngle * Mathf.Deg2Rad);
-
-        //float firingDuration = targetDistance / Vx;
-
-        //missile.transform.rotation = Quaternion.LookRotation(targetPos2 - missile.transform.position);
-
-        //float elapseTime = 0.0f;
-
-        //if (elapseTime < firingDuration)
-        //{
-        //    missile.transform.Translate(0, (Vy - (gravity * elapseTime)) * Time.deltaTime, Vx * Time.deltaTime);
-        //    elapseTime += Time.deltaTime;
-        //}
-        //-------------------------------------------------------------------------------------------------------------------------------------
-
-        //-------------------------------------------------------------------------------------------------------------------------------------
-        //    if (missile == null && isShot == true)
-        //    {
-        //        isShot = false;
-        //        isTop = false;
-        //        skill_Delay = skillCool;
-        //        return;
-        //    }
-
-        //    if (isShot == false)
-        //    {
-        //        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        //        if (enemies.Length < 1)
-        //            return;
-        //        int ranIdx = Random.Range(0, enemies.Length);
-        //        targetPos2 = enemies[ranIdx].transform.position;
-        //        missile = Instantiate(bullet_Obj, fire_Pos.transform.position, turret_Obj.transform.rotation);
-        //        halfVec = (targetPos2 - missile.transform.position) / 2; // 포물선 꼭지점
-        //        halfVec.y = 30.0f;
-        //        targetPos3 = halfVec + missile.transform.position;
-        //        isShot = true;
-        //    }
-
-        //    float speed = 10.0f;
-
-        //    if (isShot == true)
-        //    {
-        //        if (isTop == false)
-        //        { 
-        //            //missile.transform.position += halfVec.normalized * Time.deltaTime * speed;
-        //            //missile.transform.position = Vector3.Slerp(missile.transform.position, missile.transform.position + halfVec.normalized * speed, Time.deltaTime);
-        //        }
-        //        else
-        //        { 
-        //            //missile.transform.position += moveVec.normalized * Time.deltaTime * speed;
-        //            //missile.transform.position = Vector3.Slerp(missile.transform.position, missile.transform.position + moveVec.normalized * speed, Time.deltaTime);
-        //        }
-
-        //        if ((targetPos3 - missile.transform.position).magnitude < 2.0f)
-        //        {
-        //            isTop = true;
-        //            moveVec = targetPos2 - missile.transform.position;
-        //        }
-        //    }
-
     }
 
     IEnumerator ShootImp()
@@ -595,9 +574,6 @@ public class TankCtrl : MonoBehaviour
         // 그렇지 않으면 if(IsPointerOverUIObject() == false) 에 의해 막히게 된다.
         startPos = this.transform.position; // 출발 위치
         cacLenVec = a_SetTargetVec - startPos; // 현재지점과 목표지점사이의 거리 벡터
-
-        //if (cacLenVec.magnitude < 0.5f) // 근거리 피킹 스킵
-        //    return;
 
         // 네비게이션 메쉬 길찾기를 이용할 때 코드
         float a_PathLen = 0.0f;
@@ -722,15 +698,10 @@ public class TankCtrl : MonoBehaviour
 
             if ((cacDestV - curCPos).magnitude <= nowStep)   // 다음 지점까지 거리가 한 프레임에 이동할 거리보다 작아지면 중간점에 도착한 것으로 본다.
             {
-                //movePath.corners[curPathIndex] = this.transform.position; // 코너의 위치를 캐릭터의 위치로 대체
                 curPathIndex = curPathIndex + 1; // 다음 꼭지점 업데이트
             }
 
             addTimeCount = addTimeCount + Time.deltaTime; // 경과 시간 증가
-            //if (moveDurTime <= addTimeCount) // '실제 경과 시간'이 '예상 경과 시간'을 초과하면 '목표점에 도달'한 것으로 판정한다.
-            //{
-            //    curPathIndex = movePath.corners.Length; // 이동종료 [ 현재 꼭지점 경로를 최종경로로 바꿔버림 => 다음 업데이트 때 동작 안한다. ]
-            //}
         }
 
         if (curPathIndex < movePath.corners.Length) // 목적지에 아직 도착하지 않았다면
@@ -764,7 +735,6 @@ public class TankCtrl : MonoBehaviour
 
         // 피킹을 위한 동기화
         pathEndPos = transform.position;
-        //navAgent.velocity = Vector3.zero; // 목적지에 도착하면 즉시 멈춤
 
         if (0 < movePath.corners.Length)
         {

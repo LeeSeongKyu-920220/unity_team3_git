@@ -7,6 +7,8 @@ using UnityEngine.Networking;
 
 public class GameMgr : MonoBehaviour
 {
+    public static GameMgr Inst = null;
+
     Ray a_MousePos;
     RaycastHit hit;
     TankCtrl tankCtrl = null;
@@ -25,12 +27,17 @@ public class GameMgr : MonoBehaviour
     public static int[] tankLevel = {1, 1, 1, 1, 1};
 
     string UpgradeUrl = "wjst5959.dothome.co.kr/Team/UpgradeInfo.php";
+
+    public List<EnemyCtrl> enemy_List = new List<EnemyCtrl>();
+
     // Start is called before the first frame update
     private void Awake()
     {
+        Inst = this;
         Application.targetFrameRate = 60;
         StartCoroutine(UpgradeInfoCo());
     }
+
     void Start()
     {
         if (skill_Btn != null)

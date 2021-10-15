@@ -131,7 +131,7 @@ public class StartEndCtrl : MonoBehaviour
     void ReTry()
     {
         Debug.Log("다시하기");
-        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame2");
     }
     void GotoLobby()
     {

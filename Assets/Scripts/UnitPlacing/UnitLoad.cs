@@ -152,38 +152,38 @@ public class UnitLoad : MonoBehaviour
         }
 
         // pool의 인덱스에 맞는 유닛 유형 (인덱스 0 == 유닛유형1) 
-        for (int i = 0; i < userUnitInfoList.Count; i++)
-        {
-            // 유닛 유형 1인경우 == Limit 인덱스의 0번 (근데 아직 KindItem의 정확한 입력값을 모름)
-            if (userUnitInfoList[i].itemKind == "unit1")
-            {
-                UnitObjPool.Inst.tankCountLimit[0] = userUnitInfoList[i].itemUsable;
-            }
+        //for (int i = 0; i < userUnitInfoList.Count; i++)
+        //{
+        //    // 유닛 유형 1인경우 == Limit 인덱스의 0번 (근데 아직 KindItem의 정확한 입력값을 모름)
+        //    if (userUnitInfoList[i].itemKind == "unit1")
+        //    {
+        //        UnitObjPool.Inst.tankCountLimit[0] = userUnitInfoList[i].itemUsable;
+        //    }
 
-            // 유닛 유형 2인 경우 .....
-            else if (userUnitInfoList[i].itemKind == "unit2")
-            {
-                UnitObjPool.Inst.tankCountLimit[1] = userUnitInfoList[i].itemUsable;
-            }
+        //    // 유닛 유형 2인 경우 .....
+        //    else if (userUnitInfoList[i].itemKind == "unit2")
+        //    {
+        //        UnitObjPool.Inst.tankCountLimit[1] = userUnitInfoList[i].itemUsable;
+        //    }
 
-            // 유닛 유형 3인 경우 ....
-            else if (userUnitInfoList[i].itemKind == "unit3")
-            {
-                UnitObjPool.Inst.tankCountLimit[2] = userUnitInfoList[i].itemUsable;
-            }
+        //    // 유닛 유형 3인 경우 ....
+        //    else if (userUnitInfoList[i].itemKind == "unit3")
+        //    {
+        //        UnitObjPool.Inst.tankCountLimit[2] = userUnitInfoList[i].itemUsable;
+        //    }
 
-            // 유닛 유형 4인 경우 ....
-            else if (userUnitInfoList[i].itemKind == "unit4")
-            {
-                UnitObjPool.Inst.tankCountLimit[3] = userUnitInfoList[i].itemUsable;
-            }
+        //    // 유닛 유형 4인 경우 ....
+        //    else if (userUnitInfoList[i].itemKind == "unit4")
+        //    {
+        //        UnitObjPool.Inst.tankCountLimit[3] = userUnitInfoList[i].itemUsable;
+        //    }
 
-            // 유닛 유형 5인 경우 ....
-            else if (userUnitInfoList[i].itemKind == "unit5")
-            {
-                UnitObjPool.Inst.tankCountLimit[4] = userUnitInfoList[i].itemUsable;
-            }
-        }
+        //    // 유닛 유형 5인 경우 ....
+        //    else if (userUnitInfoList[i].itemKind == "unit5")
+        //    {
+        //        UnitObjPool.Inst.tankCountLimit[4] = userUnitInfoList[i].itemUsable;
+        //    }
+        //}
     }
 
 

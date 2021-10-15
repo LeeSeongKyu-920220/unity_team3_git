@@ -33,7 +33,7 @@ public class TankInfo
                     atk = 10.0f;
                     attRate = 3.0f;
                     skillCool = 5.0f;
-                    attRange = 7.0f;
+                    attRange = 10.0f;
                     break;
                 }
             case TankType.Speed:
