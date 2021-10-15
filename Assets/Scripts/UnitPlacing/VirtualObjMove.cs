@@ -24,13 +24,14 @@ public class VirtualObjMove : MonoBehaviour
 
     // UnitPlacing 의 상태 변화를 위한 변수
     UnitPlacing unitPlacing = null;
+
     //======================================================================================== ↑ 변수 선언부
 
 
     //======================================================================================== ↓ 유니티 함수 부분
     //---------------------------------------------------------------------------- Start()
     private void Start()
-    {
+    {        
         // 캐싱 부분
         renderer = this.GetComponentsInChildren<MeshRenderer>();       // 매쉬 랜더러 캐싱
         unitPlacing = GameObject.FindObjectOfType<UnitPlacing>();   // unitPlacing 캐싱
@@ -133,5 +134,6 @@ public class VirtualObjMove : MonoBehaviour
         Instantiate(realObj, pos, this.gameObject.transform.rotation);   // 임시 오브젝트 생산
         Destroy(this.gameObject, 0.08f);            // 약간 딜레이 주고 배치용 오브젝트 삭제        
     }
+
 
 }
