@@ -12,13 +12,15 @@ public enum GameState
 
 public class StartEndCtrl : MonoBehaviour
 {
-    public static GameState g_GameState = GameState.GS_Ready;
+    public static StartEndCtrl Inst = null;
+
+    public GameState g_GameState = GameState.GS_Ready;
 
     public Text m_StartCountTxt = null;
     float m_WaitTime = 4.0f;
 
     public Text m_PlayTimeTxt = null;
-    float m_PlayTime = 3000.1f;
+    float m_PlayTime = 120.1f;
 
     [Header("게임 종료 판넬")]
     public GameObject m_GameEndPanel = null;
@@ -30,9 +32,10 @@ public class StartEndCtrl : MonoBehaviour
     public Button m_GoToLobbyBtn = null;
 
 
-    // Start is called before the first frame update
     void Start()
     {
+        Inst = this;
+
         m_PlayTimeTxt.gameObject.SetActive(false);
         m_GameEndPanel.SetActive(false);
 
@@ -96,7 +99,7 @@ public class StartEndCtrl : MonoBehaviour
         if (0 < m_PlayTime)
         {
             m_PlayTimeTxt.gameObject.SetActive(true);
-            m_PlayTimeTxt.text = ((int)m_PlayTime).ToString();
+            m_PlayTimeTxt.text = m_PlayTime.ToString("F1");
             m_PlayTime = m_PlayTime - Time.deltaTime;
         }
         if (m_PlayTime <= 0)  // 시간초과로 인한 패배
@@ -120,7 +123,7 @@ public class StartEndCtrl : MonoBehaviour
             m_UITitleTxt.text = a_WL;
         }
 
-        m_RemainingTimeTxt.text = "남은시간 : " + ((int)m_PlayTime).ToString();
+        m_RemainingTimeTxt.text = "남은시간 : " + m_PlayTime.ToString("F1");
         m_ScoreTxt.text = "점수 : " + "00";
         m_GoldTxt.text = "골드 : " + "00";
     }
@@ -128,8 +131,7 @@ public class StartEndCtrl : MonoBehaviour
     void ReTry()
     {
         Debug.Log("다시하기");
-        StartEndCtrl.g_GameState = GameState.GS_Ready;
-        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame2");
     }
     void GotoLobby()
     {

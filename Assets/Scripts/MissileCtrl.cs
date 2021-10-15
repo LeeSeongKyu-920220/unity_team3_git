@@ -18,9 +18,9 @@ public class MissileCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //dir = target_Pos - this.transform.position;
-        //transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
-        //transform.rotation = Quaternion.LookRotation(dir.normalized);
+        dir = target_Pos - this.transform.position;
+        transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
+        transform.rotation = Quaternion.LookRotation(dir.normalized);
         
         Destroy(gameObject, 5.0f);
     }
