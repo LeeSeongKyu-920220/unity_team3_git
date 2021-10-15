@@ -82,17 +82,19 @@ public class VirtualObjMove : MonoBehaviour
     private void OnTriggerEnter(Collider col)
     {
         // 배치 가능 구역에 다른 물체가 있다면 설치를 못하게 해준다.
-        if (col.gameObject.CompareTag("AbleZone") == false)
-            isOccupied = true;
-        else
+        if (col.gameObject.CompareTag("AbleZone") == true)
+        {
             isOccupied = false;
-
-        if (col.gameObject.CompareTag("Tank") == true)
+        }
+        else if (col.gameObject.CompareTag("Tank") == true)
+        {
             if (col == col.GetComponent<SphereCollider>())
                 isOccupied = false;
-            else
-                isOccupied = true;
-
+        }
+        else
+        {
+            isOccupied = true;
+        }
     }
 
     private void OnTriggerExit(Collider col)

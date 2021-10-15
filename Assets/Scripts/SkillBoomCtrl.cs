@@ -7,7 +7,7 @@ public class SkillBoomCtrl : MonoBehaviour
     public GameObject sky_Obj = null;
     public GameObject boom_Obj = null;
     public GameObject range_Obj = null;
-    float boom_Delay = 0.0f;
+    float boom_Delay = 5.0f;
     float target_dist = 0.0f;
     float end_dist = 0.0f;
     Vector3 target_Pos = Vector3.zero;

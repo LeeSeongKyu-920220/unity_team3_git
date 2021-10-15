@@ -237,7 +237,7 @@ public class TankCtrl : MonoBehaviour
         target_Pos = target_Obj.transform.position;
         target_Pos.y = 0.0f;
         att_Delay = attRate;
-        GameObject bullet = Instantiate(bullet_Obj, fire_Pos.transform.position, turret_Obj.transform.rotation);
+        GameObject bullet = Instantiate(bullet_Obj, fire_Pos.transform.position, fire_Pos.transform.rotation);
         bullet.GetComponent<BulletCtrl>().target_Obj = target_Obj;
         Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
     }
@@ -339,7 +339,7 @@ public class TankCtrl : MonoBehaviour
 
         if (mGTimer <= 0.0f)
         {
-            GameObject bullet = Instantiate(bullet_Obj, machineGun_Pos.transform.position, turret_Obj.transform.rotation);
+            GameObject bullet = Instantiate(bullet_Obj, machineGun_Pos.transform.position, fire_Pos.transform.rotation);
             bullet.GetComponent<BulletCtrl>().target_Obj = target_Obj;
             bullet.GetComponent<MeshRenderer>().material.SetColor("_Color",Color.red);
             Instantiate(bullet_Obj, fire_Pos.transform.position, turret_Obj.transform.rotation);

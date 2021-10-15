@@ -29,10 +29,10 @@ public class TankInfo
             case TankType.Normal:
                 {
                     maxHp = 100.0f;
-                    speed = 5.0f;
+                    speed = 10.0f;
                     atk = 10.0f;
                     attRate = 3.0f;
-                    skillCool = 5.0f;
+                    skillCool = 1.0f;
                     attRange = 7.0f;
                     break;
                 }
