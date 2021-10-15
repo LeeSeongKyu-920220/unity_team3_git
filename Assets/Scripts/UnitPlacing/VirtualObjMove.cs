@@ -9,7 +9,7 @@ public class VirtualObjMove : MonoBehaviour
     public GameObject realObj = null;                  // 임시 오브젝트 (나중에 진짜 유닛 할당 필요)
 
     // 오브젝트의 관련 변수
-    [HideInInspector] public int objIndex = -1;                          // 어떤 탱크인지 알려주는 인덱스
+    private int objKind = -1;        // 어떤 탱크인지 알려주는 인덱스
     private Vector3 targetObjPos = Vector3.zero;       // 생성할 오브젝트의 위치 변수    
 
     // 메테리얼 관련 변수   
@@ -18,8 +18,8 @@ public class VirtualObjMove : MonoBehaviour
     private new MeshRenderer[] renderer;   // 메테리얼을 바꿔주기 위한 매쉬랜더러    
 
     // 위치 조정 및 상태 변화를 위한 변수
-    Ray ray = new Ray();
-    RaycastHit hit = new RaycastHit();    
+    Ray ray = new Ray();                    // 레이
+    RaycastHit hit = new RaycastHit();      // 레이 히트
     bool isOccupied = false;                // 다른 물체가 있는지 확인을 위한 bool
 
     // UnitPlacing 의 상태 변화를 위한 변수
@@ -34,7 +34,8 @@ public class VirtualObjMove : MonoBehaviour
     {        
         // 캐싱 부분
         renderer = this.GetComponentsInChildren<MeshRenderer>();       // 매쉬 랜더러 캐싱
-        unitPlacing = GameObject.FindObjectOfType<UnitPlacing>();   // unitPlacing 캐싱
+        unitPlacing = GameObject.FindObjectOfType<UnitPlacing>();      // unitPlacing 캐싱
+        objKind = (int)realObj.GetComponent<TankCtrl>().m_Type;        // ObjKind 캐싱 (오브젝트가 무슨 유형인지)
     }
     //---------------------------------------------------------------------------- Start()
 
@@ -51,7 +52,7 @@ public class VirtualObjMove : MonoBehaviour
 
             // 배치 가능 구역으로 들어간다면 메테리얼을 초록색으로
             if (hit.collider.gameObject.CompareTag("AbleZone") == true 
-                || hit.collider.gameObject.CompareTag("Tank") == true
+                //|| hit.collider.gameObject.CompareTag("Tank") == true
                 && isOccupied == false)
             {
                 for(int ii = 0; ii < renderer.Length; ii++)
@@ -62,7 +63,6 @@ public class VirtualObjMove : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    //Debug.Log("virtual : " + this.gameObject.transform.position);
                     MakeRealObj();
                     unitPlacing.placingState = UnitPlacingState.PRIMARY;        // 상태를 다시 원래대로
                 }
@@ -128,14 +128,15 @@ public class VirtualObjMove : MonoBehaviour
     //--------- 클릭시 진짜 오브젝트를 생성해주고 이 오브젝트는 파괴한다.
     private void MakeRealObj()
     {
-        //UnitObjPool.GetObj(objIndex, this.transform.position);             // 진짜 오브젝트 생산 (풀에서 꺼내옴)
-        
-        Destroy(this.gameObject.GetComponent<Rigidbody>());     // 원래꺼가 밀어내는 거 방지를 위해 리지드 바디 삭제        
-        Vector3 pos = this.transform.position;
-        pos.y = 1.0f;
-        Instantiate(realObj, pos, this.gameObject.transform.rotation);   // 임시 오브젝트 생산
+        Destroy(this.gameObject.GetComponent<Rigidbody>());     // 원래꺼가 밀어내는 거 방지를 위해 가상 오브젝트의 리지드 바디 삭제        
+        Vector3 pos = this.transform.position;                  // 가상 오브젝트의 위치에 생성
+        pos.y = 1.0f;                                           // 맵과 위치 맞춰줌
+
+        UnitObjPool.Inst.GetObj(objKind, pos);             // 진짜 오브젝트 생산 (풀에서 꺼내옴)
+
         Destroy(this.gameObject, 0.08f);            // 약간 딜레이 주고 배치용 오브젝트 삭제        
     }
+    //---------------------------------------------------------------------------- MakeRealObj()
 
 
 }

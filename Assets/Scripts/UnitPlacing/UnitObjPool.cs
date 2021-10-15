@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class UnitObjPool : MonoBehaviour
 {
@@ -31,7 +30,6 @@ public class UnitObjPool : MonoBehaviour
             InitQueue(i, tankCountLimit[i]);
         }
     }
-
 
     // Queue에 오브젝트를 할당하는 함수
     void InitQueue(int objKind, int countLimit)
