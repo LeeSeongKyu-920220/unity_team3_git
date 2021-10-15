@@ -31,7 +31,7 @@ public class UnitButtonInfo : MonoBehaviour
         if (buttonTxt != null)
         {
             buttonTxt.text
-              = virtualPrefab.GetComponent<VirtualObjMove>().realObj.GetComponent<TankCtrl>().m_Type.ToString() + "\n" +
+             = virtualPrefab.GetComponent<VirtualObjMove>().realObj.GetComponent<TankCtrl>().m_Type.ToString() + "\n" +
               "(" + UnitObjPool.Inst.activeTankCount[index].ToString() + " / " + UnitObjPool.Inst.tankCountLimit[index] + ")";
         }
     }

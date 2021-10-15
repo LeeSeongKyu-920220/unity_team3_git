@@ -37,11 +37,11 @@ public class UnitPlacing : MonoBehaviour
     // 유닛 배치 UI 관련 변수
     // ========= 테스트용....
     // 테스트용 버튼
-    public Button unitPlace_Btn = null;             // 유닛 배치 버튼
-    public Text unitPlaceBtn_Txt = null;            // 유닛 배치 버튼의 Text
+    //public Button unitPlace_Btn = null;             // 유닛 배치 버튼
+    //public Text unitPlaceBtn_Txt = null;            // 유닛 배치 버튼의 Text
 
     // 테스트용 오브젝트
-    public GameObject testObj = null;
+    //public GameObject testObj = null;
     // ========= 테스트용....
 
     // 진짜용.....
