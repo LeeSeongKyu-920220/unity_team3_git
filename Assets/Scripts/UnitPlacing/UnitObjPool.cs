@@ -17,8 +17,6 @@ public class UnitObjPool : MonoBehaviour
     // 탱크 오브젝트 풀 배열
     Queue<GameObject>[] tankPool = new Queue<GameObject>[5];    // 큐 배열 .... 탱크의 인덱스와 일치 해야한다.
 
-    GameObject testObj = null;
-
     private void Awake()
     {        
         unitObjPool = this;     // 전역변수처럼 사용하기 위한 캐싱       
@@ -44,7 +42,7 @@ public class UnitObjPool : MonoBehaviour
         tempTankPool.Clear();
 
         // 최대 제한수 보다 5개정도 여유를 주고 생산시킨다.
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < countLimit + 5; i++)
         {
             tempTankPool.Enqueue(CreateNewObj(objKind));            
         }
