@@ -10,8 +10,6 @@ public class AbleZone : MonoBehaviour
     {
         unitPlacing = GameObject.FindObjectOfType<UnitPlacing>();
 
-        //if(unitPlacing != null)
-        //    StateUpdate();
         // SetActive == false 이므로 인보크로 대기시킨다.
         if (unitPlacing != null)
             InvokeRepeating("StateUpdate", 0.2f, 0.2f);

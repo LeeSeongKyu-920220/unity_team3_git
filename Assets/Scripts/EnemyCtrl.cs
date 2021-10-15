@@ -39,7 +39,7 @@ public class EnemyCtrl : MonoBehaviour
         if (now_Hp <= 0.0f)
         {
             if (m_EnemyType == EnemyType.EnemyBase)
-                StartEndCtrl.Inst.g_GameState = GameState.GS_GameEnd;
+                StartEndCtrl.g_GameState = GameState.GS_GameEnd;
 
             Destroy(this.gameObject);
         }

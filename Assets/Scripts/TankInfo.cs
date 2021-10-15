@@ -20,7 +20,6 @@ public class TankInfo
     public float atk;     // 공격력
     public float attRate; // 공격속도
     public float skillCool; // 스킬 쿨타임
-    public float attRange;
 
     public void TankInit() // 탱크의 기본정보 세팅
     {
@@ -33,7 +32,6 @@ public class TankInfo
                     atk = 10.0f;
                     attRate = 3.0f;
                     skillCool = 5.0f;
-                    attRange = 7.0f;
                     break;
                 }
             case TankType.Speed:
@@ -43,7 +41,6 @@ public class TankInfo
                     atk = 2.0f;
                     attRate = 1.5f;
                     skillCool = 8.0f;
-                    attRange = 4.0f;
                     break;
                 }
             case TankType.Repair:
@@ -53,7 +50,7 @@ public class TankInfo
                     atk = 8.0f;
                     attRate = 3.0f;
                     skillCool = 5.0f;
-                    attRange = 7.0f;
+
                     break;
                 }
             case TankType.Solid:
@@ -63,8 +60,7 @@ public class TankInfo
                     atk = 3.0f;
                     attRate = 4.0f;
                     skillCool = 10.0f;
-                    attRange = 7.0f;
-                    break;
+                break;
                 }
             case TankType.Cannon: // 멀리까지 공격이 가능한 차량
                 {
@@ -73,7 +69,6 @@ public class TankInfo
                     atk = 20.0f;
                     attRate = 5.0f;
                     skillCool = 8.0f;
-                    attRange = 15.0f;
                     break;
                 }
         }
