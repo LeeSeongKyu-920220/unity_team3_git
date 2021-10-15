@@ -11,8 +11,8 @@ public class UnitObjPool : MonoBehaviour
     public GameObject[] unitObjPrefab = new GameObject[5];                // 탱크 오브젝트의 순서와 일치해야한다.
 
     // 유닛 생성 제한 변수
-    public int[] tankCountLimit =  { 0,0,0,0,0 };        // 각 0~4번까지 해당 버튼의 인덱스와 일치시켜야한다. (인덱스 0 == 1번유닛)
-    public int[] activeTankCount = { 0,0,0,0,0 };        // 활성화 되어 있는 탱크 수
+    [HideInInspector] public int[] tankCountLimit =  { 0,0,0,0,0 };        // 각 0~4번까지 해당 버튼의 인덱스와 일치시켜야한다. (인덱스 0 == 1번유닛)
+    [HideInInspector] public int[] activeTankCount = { 0,0,0,0,0 };        // 활성화 되어 있는 탱크 수
 
     // 탱크 오브젝트 풀 배열
     Queue<GameObject>[] tankPool = new Queue<GameObject>[5];    // 큐 배열 .... 탱크의 인덱스와 일치 해야한다.
