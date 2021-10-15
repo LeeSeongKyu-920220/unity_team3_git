@@ -29,8 +29,8 @@ public class TankCtrl : MonoBehaviour
     public GameObject fire_Pos = null;      // 발사 위치 오브젝트
     public GameObject bullet_Obj = null;    // 총알 오브젝트
     public GameObject turret_Explo = null;  // 발사 이펙트 오브젝트
-
-    float h, v;
+    public GameObject cannon_Obj = null;    // 포대 오브젝트
+    //float h, v;
 
     // </ 길찾기
 
@@ -112,20 +112,25 @@ public class TankCtrl : MonoBehaviour
 
         if (target_Obj != null)
         {
-            target_Pos = target_Obj.transform.position;
-            target_Pos.y = 0.0f;
-            Vector3 dir = target_Pos - tank_Pos;
-            Quaternion lookRotation = Quaternion.LookRotation(dir);
-            Vector3 rotation = Quaternion.Lerp(turret_Obj.transform.rotation, lookRotation, Time.deltaTime * turn_Speed).eulerAngles;
-            turret_Obj.transform.rotation = Quaternion.Euler(0f, rotation.y, 0f);
+            if (m_Type != TankType.Cannon || skill_Delay > 0.0f) // 캐논형 타입의 차량은 스킬 사용중에는 터렛회전을 여기서 하지 않는다.
+            { 
+                target_Pos = target_Obj.transform.position;
+                target_Pos.y = 0.0f;
+                Vector3 dir = target_Pos - tank_Pos;
+                Quaternion lookRotation = Quaternion.LookRotation(dir);
+                Vector3 rotation = Quaternion.Lerp(turret_Obj.transform.rotation, lookRotation, Time.deltaTime * turn_Speed).eulerAngles;
+                turret_Obj.transform.rotation = Quaternion.Euler(0f, rotation.y, 0f);
+            }
         }
 
         if(target_List.Count <= 0)
         {
-            turret_Obj.transform.rotation = Quaternion.Slerp(turret_Obj.transform.rotation, 
+            if (m_Type != TankType.Cannon || skill_Delay > 0.0f) // 캐논형 타입의 차량은 스킬 사용중에는 터렛회전을 여기서 하지 않는다.
+            { 
+                turret_Obj.transform.rotation = Quaternion.Slerp(turret_Obj.transform.rotation, 
                 this.transform.rotation, Time.deltaTime * turn_Speed);
-            turret_Obj.transform.localEulerAngles = new Vector3(0.0f, turret_Obj.transform.localEulerAngles.y, 0.0f);
-
+                turret_Obj.transform.localEulerAngles = new Vector3(0.0f, turret_Obj.transform.localEulerAngles.y, 0.0f);
+            }
         }
         NavUpdate(); // 길찾기
         Attack();
@@ -194,6 +199,9 @@ public class TankCtrl : MonoBehaviour
         if (att_Delay > 0.0f)
             return;
 
+        if (skill_Delay <= 0.0f && (TankType.Speed == m_Type || TankType.Cannon == m_Type)) // 스킬 사용중일 때는 일반공격 못하도록
+            return;
+
         List<float> target_Dist = new List<float>();
         
         for (int ii = 0; ii < target_List.Count;)
@@ -219,7 +227,7 @@ public class TankCtrl : MonoBehaviour
         target_Obj = target_List[target_Index];
         target_Pos = target_Obj.transform.position;
         target_Pos.y = 0.0f;
-        att_Delay = attRate;
+        att_Delay = attRate; 
         GameObject bullet = Instantiate(bullet_Obj, fire_Pos.transform.position, turret_Obj.transform.rotation);
         bullet.GetComponent<BulletCtrl>().target_Obj = target_Obj;
         Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
@@ -324,23 +332,39 @@ public class TankCtrl : MonoBehaviour
         {
             GameObject bullet = Instantiate(bullet_Obj, machineGun_Pos.transform.position, Quaternion.identity);
             bullet.GetComponent<BulletCtrl>().target_Obj = target_Obj;
+            bullet.GetComponent<MeshRenderer>().material.SetColor("_Color",Color.red);
             Instantiate(bullet_Obj, fire_Pos.transform.position, Quaternion.identity);
             mGTimer = mGRate; // 텀 충전
+            bulletIdx++;
             if(bulletIdx == mGBullet) // 모든 탄환을 격발하고 나면 스킬쿨타임 돌기 시작
             { 
                 skill_Delay = skillCool;
+                att_Delay = attRate; // 스킬 사용후 바로 기본공격 못하게
+                Debug.Log(skillCool);
                 bulletIdx = 0;
             }
         }
     }
-    
+
     // -------- Cannon 유닛 스킬 관련 변수
     bool isShot = false;
     GameObject missile;
-    Vector3 targetPos2;
-    float firingAngle = 30.0f;
-    float gravity = 9.8f;
+    float tx;
+    float ty;
+    float tz;
+    float v;
+    public float g = 9.8f;
+    float elapsed_time;
+    public float max_height;
+    float t;
+    Vector3 start_pos;
+    Vector3 end_pos;
+    float dat;  //도착점 도달 시간 
+    float actionTimer = 2.0f;
+    int ranEnemyIdx = -1;
+    GameObject[] enemies = null;
     // -------- Cannon 유닛 스킬 관련 변수
+
     void Cannon() // 랜덤으로 선택한 적에게 포물선으로 미사일 타격
     {
         if (m_Type != TankType.Cannon)
@@ -349,45 +373,110 @@ public class TankCtrl : MonoBehaviour
         if (skill_Delay > 0.0f)
             return;
 
-        if (missile == null && isShot == true)
+        if (missile == null && isShot == true) // 미사일 격추가 완료 되면
         {
             isShot = false;
-            skill_Delay = skillCool;
+            isMoveOn = true; // 미사일 격추가 끝나면 다시 움직임.
+            skill_Delay = skillCool; // 스킬 쿨타임 재활성화
+            att_Delay = attRate; // 스킬 사용후 바로 기본공격 못하게
+            ranEnemyIdx = -1; // 적선택인덱스 초기화
+            actionTimer = 2.0f;
+            cannon_Obj.transform.localEulerAngles = new Vector3(0, cannon_Obj.transform.localEulerAngles.y, cannon_Obj.transform.localEulerAngles.z);
             return;
         }
 
+        //-----------------------------------------------------------------------------------------------------------------
+        if(isShot == false)
+        {
+            isMoveOn = false; // 스킬 사용중에는 움직이지 않는다.
+            
+            if(actionTimer > 0.0f) // 시즈모드On 연출타임
+            { 
+                actionTimer -= Time.deltaTime;
+            }
+
+            if(ranEnemyIdx < 0) // 적 선택
+            { 
+                enemies = GameObject.FindGameObjectsWithTag("Enemy");
+                if (enemies.Length < 1)
+                    return;
+                ranEnemyIdx = Random.Range(0, enemies.Length);
+            }
+            
+            Quaternion a_TargetDir = Quaternion.LookRotation(enemies[ranEnemyIdx].transform.position - transform.position);
+            turret_Obj.transform.rotation = Quaternion.Slerp(turret_Obj.transform.rotation, a_TargetDir, Time.deltaTime * 10.0f);
+            //cannon_Obj.transform.localEulerAngles = Vector3.Lerp(cannon_Obj.transform.localEulerAngles, 
+            //                    new Vector3(315.0f, cannon_Obj.transform.localEulerAngles.y, cannon_Obj.transform.localEulerAngles.z),
+            //                    Time.deltaTime * 10.0f);
+            Vector3 dir = new Vector3(0, 0.5f, 0.5f);
+            cannon_Obj.transform.localRotation = Quaternion.LookRotation(dir);
+
+
+            if (actionTimer <= 0.0f) // 시즈모드On 연출타임이 끝나면 미사일 발사
+            { 
+                missile = Instantiate(missilePrefab, fire_Pos.transform.position, turret_Obj.transform.rotation);
+                missile.GetComponent<MissileCtrl>().target_Obj = enemies[ranEnemyIdx];
+                Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
+
+                start_pos = missile.transform.position;
+                end_pos = enemies[ranEnemyIdx].transform.position;
+                max_height = 20.0f;
+
+                var dh = end_pos.y - start_pos.y;
+                var mh = max_height - start_pos.y;
+                ty = Mathf.Sqrt(2 * g * mh);
+
+                float a = g;
+                float b = -2 * ty;
+                float c = 2 * dh;
+
+                dat = (-b + Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a);
+
+                tx = -(start_pos.x - end_pos.x) / dat;
+                tz = -(start_pos.z - end_pos.z) / dat;
+
+                elapsed_time = 0;
+
+                isShot = true;
+            }
+        }
+
+        if(isShot == true)
+        {
+            StartCoroutine(ShootImp());
+        }
         //------------------------------------------------------------------------------------------------------------------
-        if (isShot == false)
-        {
-            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        //if (isShot == false)
+        //{
+        //    GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
-            if (enemies.Length < 1)
-                return;
+        //    if (enemies.Length < 1)
+        //        return;
 
-            int ranIdx = Random.Range(0, enemies.Length);
-            targetPos2 = enemies[ranIdx].transform.position;
-            missile = Instantiate(missilePrefab, fire_Pos.transform.position, turret_Obj.transform.rotation);
-            missile.GetComponent<MissileCtrl>().target_Obj = enemies[ranIdx];
-            Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
-            isShot = true;
-        }
+        //    int ranIdx = Random.Range(0, enemies.Length);
+        //    targetPos2 = enemies[ranIdx].transform.position;
+        //    missile = Instantiate(missilePrefab, fire_Pos.transform.position, turret_Obj.transform.rotation);
+        //    missile.GetComponent<MissileCtrl>().target_Obj = enemies[ranIdx];
+        //    Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
+        //    isShot = true;
+        //}
 
-        float targetDistance = Vector3.Distance(missile.transform.position, targetPos2);
-        float velocity = targetDistance / (Mathf.Sin(2 * firingAngle * Mathf.Deg2Rad) / gravity);
-        float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(firingAngle * Mathf.Deg2Rad);
-        float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(firingAngle * Mathf.Deg2Rad);
+        //float targetDistance = Vector3.Distance(missile.transform.position, targetPos2);
+        //float velocity = targetDistance / (Mathf.Sin(2 * firingAngle * Mathf.Deg2Rad) / gravity);
+        //float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(firingAngle * Mathf.Deg2Rad);
+        //float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(firingAngle * Mathf.Deg2Rad);
 
-        float firingDuration = targetDistance / Vx;
+        //float firingDuration = targetDistance / Vx;
 
-        missile.transform.rotation = Quaternion.LookRotation(targetPos2 - missile.transform.position);
+        //missile.transform.rotation = Quaternion.LookRotation(targetPos2 - missile.transform.position);
 
-        float elapseTime = 0.0f;
+        //float elapseTime = 0.0f;
 
-        if (elapseTime < firingDuration)
-        {
-            missile.transform.Translate(0, (Vy - (gravity * elapseTime)) * Time.deltaTime, Vx * Time.deltaTime);
-            elapseTime += Time.deltaTime;
-        }
+        //if (elapseTime < firingDuration)
+        //{
+        //    missile.transform.Translate(0, (Vy - (gravity * elapseTime)) * Time.deltaTime, Vx * Time.deltaTime);
+        //    elapseTime += Time.deltaTime;
+        //}
         //-------------------------------------------------------------------------------------------------------------------------------------
 
         //-------------------------------------------------------------------------------------------------------------------------------------
@@ -436,6 +525,34 @@ public class TankCtrl : MonoBehaviour
         //    }
 
     }
+
+    IEnumerator ShootImp()
+    {
+        while(true)
+        {
+            if (missile == null)
+            {
+                yield break;
+            }
+
+            this.elapsed_time += Time.deltaTime * 0.02f;
+
+            var tx = start_pos.x + this.tx * elapsed_time;
+            var ty = start_pos.y + this.ty * elapsed_time - 0.5f * g * elapsed_time * elapsed_time;
+            var tz = start_pos.z + this.tz * elapsed_time;
+
+            var tpos = new Vector3(tx, ty, tz);
+
+            missile.transform.LookAt(tpos);
+            missile.transform.position = tpos;
+
+            if (this.elapsed_time >= this.dat)
+                break;
+
+            yield return null;
+        }
+    }
+
     // 유닛 스킬 구현 부분 ------------------------------------------------------------------------------------------------------------------------------
     #endregion
     IEnumerator SetDestinationCo()
@@ -462,6 +579,7 @@ public class TankCtrl : MonoBehaviour
 
     #endregion
 
+    #region -------------- 길찾기 부분
     public void SetDestination(Vector3 a_SetTargetVec)
     {
 
@@ -648,6 +766,7 @@ public class TankCtrl : MonoBehaviour
         curPathIndex = 1; // 진행 인덱스 초기화
         // 피킹을 위한 동기화 부분
     }
+    #endregion
 
     public void OnTriggerEnter(Collider coll)
     {
