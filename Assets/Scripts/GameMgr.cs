@@ -30,6 +30,11 @@ public class GameMgr : MonoBehaviour
 
     public List<EnemyCtrl> enemy_List = new List<EnemyCtrl>();
 
+    // 메인 BGM관련 스크립트
+    AudioSource m_BGMaudioSource = null;
+    public AudioClip[] m_BGMaudioClip = null;
+    // 메인 BGM관련 스크립트
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -51,6 +56,13 @@ public class GameMgr : MonoBehaviour
 
                 SkillPickFunc();
             });
+
+        // 메인 BGM관련 스크립트
+        m_BGMaudioSource = Camera.main.GetComponent<AudioSource>();
+        m_BGMaudioSource.clip = m_BGMaudioClip[Random.Range(0, m_BGMaudioClip.Length)];
+        m_BGMaudioSource.volume = 0.3f;
+        m_BGMaudioSource.Play();
+        // 메인 BGM관련 스크립트
     }
 
     void Update()
