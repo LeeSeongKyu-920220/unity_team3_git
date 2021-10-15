@@ -34,7 +34,10 @@ public class BulletCtrl : MonoBehaviour
     {
         if (coll.name.Contains("Enemy") == true)
         {
-            Instantiate(explo_Obj, this.transform.position, Quaternion.identity);
+            Vector3 pos = this.transform.position;
+            pos.x -= 0.25f;
+            pos.z -= 0.25f;
+            Instantiate(explo_Obj, pos, Quaternion.identity);
             coll.GetComponent<EnemyCtrl>().Damage(25.0f);
             Destroy(this.gameObject);
         }
