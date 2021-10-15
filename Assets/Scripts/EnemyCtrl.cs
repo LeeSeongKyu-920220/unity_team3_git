@@ -24,7 +24,6 @@ public class EnemyCtrl : MonoBehaviour
 
         now_Hp = max_Hp;
 
-        GameMgr.Inst.enemy_List.Add(this);
     }
 
     void Update()
@@ -42,8 +41,36 @@ public class EnemyCtrl : MonoBehaviour
             if (m_EnemyType == EnemyType.EnemyBase)
                 StartEndCtrl.Inst.g_GameState = GameState.GS_GameEnd;
 
-            GameMgr.Inst.enemy_List.Remove(this);
             Destroy(this.gameObject);
         }
     }
+
+    #region ---------- 사정거리 충돌 체크
+
+    public void OnTriggerEnter(Collider coll)
+    {
+        if (coll.name.Contains("Tank") == true)
+        {
+            if (coll != coll.GetComponent<SphereCollider>())
+                return;
+
+            coll.GetComponent<TankCtrl>().target_List.Add(this.gameObject);
+        }
+    }
+
+    public void OnTriggerExit(Collider coll)
+    {
+        if (coll.name.Contains("Tank") == true)
+        {
+            if (coll != coll.GetComponent<SphereCollider>())
+                return;
+
+            coll.GetComponent<TankCtrl>().target_List.Remove(this.gameObject);
+
+            if (coll.GetComponent<TankCtrl>().target_Obj == this.gameObject)
+                coll.GetComponent<TankCtrl>().target_Obj = null;
+
+        }
+    }
+    #endregion
 }
