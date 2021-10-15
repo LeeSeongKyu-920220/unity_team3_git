@@ -15,7 +15,6 @@ public class TankCtrl : MonoBehaviour
     float curHp = 0.0f;                     // 현재체력
     float maxHp = 0.0f;                     // 최대체력
     float skillCool = 0.0f;                 // 스킬 쿨타임
-    float attRange = 0.0f;
     // 기본 탱크 정보 변수
 
     // 기본 탱크 정보 변수
@@ -31,8 +30,6 @@ public class TankCtrl : MonoBehaviour
     public GameObject bullet_Obj = null;    // 총알 오브젝트
     public GameObject turret_Explo = null;  // 발사 이펙트 오브젝트
     public GameObject cannon_Obj = null;    // 포대 오브젝트
-    SphereCollider range_Coll;
-
     //float h, v;
 
     // </ 길찾기
@@ -83,24 +80,20 @@ public class TankCtrl : MonoBehaviour
     void Start()
     {
         // 탱크 기본정보 받아오기
-        //Init();
+        Init();
         // 탱크 기본정보 받아오기
 
         movePath = new NavMeshPath();
         navAgent = this.gameObject.GetComponent<NavMeshAgent>();
         navAgent.updateRotation = false;
         beginTarPos = GameObject.Find("Begin_Tar_Pos").transform;
-        range_Coll = this.GetComponent<SphereCollider>();
-        
         StartCoroutine(SetDestinationCo());
         Init();
-        
-        //cannon_Obj.transform.eulerAngles = new Vector3(-45, 0, 0);
     }
 
     void Update()
     {
-        if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
+        if (StartEndCtrl.g_GameState != GameState.GS_Playing)
             return;
 
         if (Input.GetKeyDown(KeyCode.Q))
@@ -160,8 +153,6 @@ public class TankCtrl : MonoBehaviour
         maxHp = tankInfo.maxHp * level;
         curHp = maxHp;
         skillCool = tankInfo.skillCool;
-        attRange = tankInfo.attRange;
-        range_Coll.radius = attRange;
         // 탱크 기본정보 받아오기
     }
     void TakeDamage(int a_Damage)
@@ -236,8 +227,8 @@ public class TankCtrl : MonoBehaviour
         target_Obj = target_List[target_Index];
         target_Pos = target_Obj.transform.position;
         target_Pos.y = 0.0f;
-        att_Delay = attRate;
-        GameObject bullet = Instantiate(bullet_Obj, fire_Pos.transform.position, fire_Pos.transform.rotation);
+        att_Delay = attRate; 
+        GameObject bullet = Instantiate(bullet_Obj, fire_Pos.transform.position, turret_Obj.transform.rotation);
         bullet.GetComponent<BulletCtrl>().target_Obj = target_Obj;
         Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
     }
@@ -339,10 +330,10 @@ public class TankCtrl : MonoBehaviour
 
         if (mGTimer <= 0.0f)
         {
-            GameObject bullet = Instantiate(bullet_Obj, machineGun_Pos.transform.position, fire_Pos.transform.rotation);
+            GameObject bullet = Instantiate(bullet_Obj, machineGun_Pos.transform.position, Quaternion.identity);
             bullet.GetComponent<BulletCtrl>().target_Obj = target_Obj;
             bullet.GetComponent<MeshRenderer>().material.SetColor("_Color",Color.red);
-            Instantiate(bullet_Obj, fire_Pos.transform.position, turret_Obj.transform.rotation);
+            Instantiate(bullet_Obj, fire_Pos.transform.position, Quaternion.identity);
             mGTimer = mGRate; // 텀 충전
             bulletIdx++;
             if(bulletIdx == mGBullet) // 모든 탄환을 격발하고 나면 스킬쿨타임 돌기 시작
@@ -354,7 +345,7 @@ public class TankCtrl : MonoBehaviour
             }
         }
     }
-    
+
     // -------- Cannon 유닛 스킬 관련 변수
     bool isShot = false;
     GameObject missile;
@@ -373,6 +364,7 @@ public class TankCtrl : MonoBehaviour
     int ranEnemyIdx = -1;
     GameObject[] enemies = null;
     // -------- Cannon 유닛 스킬 관련 변수
+
     void Cannon() // 랜덤으로 선택한 적에게 포물선으로 미사일 타격
     {
         if (m_Type != TankType.Cannon)
@@ -393,7 +385,7 @@ public class TankCtrl : MonoBehaviour
             return;
         }
 
-        //------------------------------------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------------------------------------
         if(isShot == false)
         {
             isMoveOn = false; // 스킬 사용중에는 움직이지 않는다.
@@ -560,6 +552,7 @@ public class TankCtrl : MonoBehaviour
             yield return null;
         }
     }
+
     // 유닛 스킬 구현 부분 ------------------------------------------------------------------------------------------------------------------------------
     #endregion
     IEnumerator SetDestinationCo()

@@ -29,21 +29,6 @@ public class UnitInfo
     public UnitInfo()
     {
     }
-
-    public void UnitPrint()
-    {
-
-        Debug.Log("itemNo : " + itemNo);
-        Debug.Log("itemName : " + itemName);
-        Debug.Log("itemLevel : " + itemLevel);
-        Debug.Log("isBuy : " + isBuy);
-        Debug.Log("posX : " + posX);
-        Debug.Log("posY : " + posY);
-        Debug.Log("itemKind : " + itemKind);
-        Debug.Log("itemUsable : " + itemUsable);
-        Debug.Log("isAttack : " + isAttack);
-        Debug.Log("userID : " + userID);
-    }
 }
 
 /*
@@ -79,13 +64,16 @@ public class UnitLoad : MonoBehaviour
 
         // 유저의 유닛 정보를 받아온다.
         StartCoroutine(GetUserUnitInfo_Co());
+
+        Debug.Log(UnitObjPool.tankCountLimit[0]);
     }
 
     // 유저의 유닛 정보를 DB에서 받아온다.
+    // KindOfItem만 받아오자......
     private IEnumerator GetUserUnitInfo_Co()
     {
         // ============================================
-        // 여기에 UserID 검사 후 return 부분 추가 필요
+        // 여기에 UserID 검사 후 reutn 부분 추가 필요
         // =============================================
 
         // 통신을 위한 form 작성 ... 아이디 값 송신해서 서버와 대조
@@ -128,8 +116,7 @@ public class UnitLoad : MonoBehaviour
         //                      2순위 공격용인지 방어용인지
         //                      3순위 구매했는지 안했는지
         //                      이런 검사들을 모두 거친 후 ItemUsable 값을 추출한다.
-        //
-        // ↑↑↑↑↑ 위 과정을 모두 서버에서 검사했음...!!!
+        // ↑↑↑↑↑ 위 과정을 모두 서버에서 검사했음...
         // 결국 생성된 JSON은 내가 구매했고 공격팀인 경우에만 추출됨
         //==============================================
 
@@ -148,43 +135,20 @@ public class UnitLoad : MonoBehaviour
             unitInfo.itemUsable = N[i]["ItemUsable"].AsInt;
             unitInfo.isAttack = N[i]["isAttack"].AsChar;
             userUnitInfoList.Add(unitInfo);
-            //unitInfo.UnitPrint();
         }
+        // =============================================
+        // 실제로는 for문 이용해서 Pool의 Limit 인덱스 마다 Usable의 값을 넣어줘야 한다.
+        // =============================================
+        for (int i = 0; i < userUnitInfoList.Count; i++)
+        {
+            // 유닛 유형 1인경우 == Limit 인덱스의 0번 (근데 아직 KindItem의 정확한 입력값을 모름)
+            if (userUnitInfoList[i].itemKind == "unit1")
+            {
+                UnitObjPool.tankCountLimit[0] = userUnitInfoList[i].itemUsable;
+            }
 
-        // pool의 인덱스에 맞는 유닛 유형 (인덱스 0 == 유닛유형1) 
-        //for (int i = 0; i < userUnitInfoList.Count; i++)
-        //{
-        //    // 유닛 유형 1인경우 == Limit 인덱스의 0번 (근데 아직 KindItem의 정확한 입력값을 모름)
-        //    if (userUnitInfoList[i].itemKind == "unit1")
-        //    {
-        //        UnitObjPool.Inst.tankCountLimit[0] = userUnitInfoList[i].itemUsable;
-        //    }
-
-        //    // 유닛 유형 2인 경우 .....
-        //    else if (userUnitInfoList[i].itemKind == "unit2")
-        //    {
-        //        UnitObjPool.Inst.tankCountLimit[1] = userUnitInfoList[i].itemUsable;
-        //    }
-
-        //    // 유닛 유형 3인 경우 ....
-        //    else if (userUnitInfoList[i].itemKind == "unit3")
-        //    {
-        //        UnitObjPool.Inst.tankCountLimit[2] = userUnitInfoList[i].itemUsable;
-        //    }
-
-        //    // 유닛 유형 4인 경우 ....
-        //    else if (userUnitInfoList[i].itemKind == "unit4")
-        //    {
-        //        UnitObjPool.Inst.tankCountLimit[3] = userUnitInfoList[i].itemUsable;
-        //    }
-
-        //    // 유닛 유형 5인 경우 ....
-        //    else if (userUnitInfoList[i].itemKind == "unit5")
-        //    {
-        //        UnitObjPool.Inst.tankCountLimit[4] = userUnitInfoList[i].itemUsable;
-        //    }
-        //}
+            // 유닛 유형 2인 경우 ..... (추후에 추가)
+        }
     }
-
 
 }

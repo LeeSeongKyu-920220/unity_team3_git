@@ -35,18 +35,12 @@ public class UnitPlacing : MonoBehaviour
     [HideInInspector] public UnitPlacingState placingState = UnitPlacingState.PRIMARY;
 
     // 유닛 배치 UI 관련 변수
-    // ========= 테스트용....
-    // 테스트용 버튼
     public Button unitPlace_Btn = null;             // 유닛 배치 버튼
     public Text unitPlaceBtn_Txt = null;            // 유닛 배치 버튼의 Text
+    public Button[] unitButton = new Button[5];     // 5마리의  유닛을 위한 버튼 ... 각 버튼에 맞는 인덱스 넣어줘야 함
 
     // 테스트용 오브젝트
     public GameObject testObj = null;
-    // ========= 테스트용....
-
-    // 진짜용.....
-    public Button[] unitButton = new Button[5];     // 5마리의  유닛을 위한 버튼 ... 각 버튼에 맞는 인덱스 넣어줘야 함
-
 
     // 유닛 드래그 앤 드롭 관련 변수
     //private TankCtrl virtualUnitObj = null;
@@ -54,6 +48,7 @@ public class UnitPlacing : MonoBehaviour
     Vector3 targetPos = Vector3.zero;
     Ray ray = new Ray();
     RaycastHit hit = new RaycastHit();
+
     //======================================================================================== ↑ 변수 선언부
 
 
@@ -61,12 +56,16 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- Start()
     void Start()
     {
+        if (unitPlaceBtn_Txt != null)
+            unitPlaceBtn_Txt.text
+                = "유닛 1번\n" + "(" + UnitObjPool.activeTankCount[0].ToString()+ "/" + UnitObjPool.tankCountLimit[0].ToString() + ")";
+
         // 유닛 배치 버튼 클릭 감지
         if (unitPlace_Btn != null && unitPlace_Btn.enabled == true)
         {
             unitPlace_Btn.onClick.AddListener(() =>
             {
-                if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
+                if (StartEndCtrl.g_GameState != GameState.GS_Playing)
                     return;
 
                 placingState = UnitPlacingState.INSTANCE;
@@ -75,16 +74,17 @@ public class UnitPlacing : MonoBehaviour
             });
         }
 
+
     }
     //---------------------------------------------------------------------------- Start()
 
     // 성능 향상을 위한 LateUpdate 사용
     void Update()
     {
-        if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
+        if (StartEndCtrl.g_GameState != GameState.GS_Playing)
             return;
 
-        // 진행 상태를 확인하며 모든 버튼을 꺼주는 함수 실행
+        // 유닛 상태를 확인하며 모든 버튼을 꺼주는 함수 실행
         OffAllUnitButton();
     }
     //---------------------------------------------------------------------------- FixedUpdate()
@@ -140,5 +140,6 @@ public class UnitPlacing : MonoBehaviour
         return testObj;
     }
     //---------------------------------------------------------------------------- InstanceUnit()
+
     //======================================================================================== ↑ 사용자 정의 함수 부분
 }
