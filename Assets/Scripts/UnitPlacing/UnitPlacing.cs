@@ -73,6 +73,7 @@ public class UnitPlacing : MonoBehaviour
                 virtualUnitObj.GetComponent<VirtualObjMove>().objIndex = 0;     // 임시로 인덱스 할당
             });
         }
+
     }
     //---------------------------------------------------------------------------- Start()
 
@@ -87,7 +88,7 @@ public class UnitPlacing : MonoBehaviour
 
         if (unitPlaceBtn_Txt != null)
             unitPlaceBtn_Txt.text
-                = "Normal\n" + "(" + UnitObjPool.activeTankCount[0].ToString() + "/" + UnitObjPool.tankCountLimit[0].ToString() + ")";
+                = "Normal\n" + "(" + UnitObjPool.Inst.activeTankCount[0].ToString() + "/" + UnitObjPool.Inst.tankCountLimit[0].ToString() + ")";
     }
     //---------------------------------------------------------------------------- FixedUpdate()
     //======================================================================================== ↑ 유니티 함수 부분

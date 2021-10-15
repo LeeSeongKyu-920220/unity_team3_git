@@ -31,7 +31,7 @@ public class VirtualObjMove : MonoBehaviour
     //======================================================================================== ↓ 유니티 함수 부분
     //---------------------------------------------------------------------------- Start()
     private void Start()
-    {
+    {        
         // 캐싱 부분
         renderer = this.GetComponentsInChildren<MeshRenderer>();       // 매쉬 랜더러 캐싱
         unitPlacing = GameObject.FindObjectOfType<UnitPlacing>();   // unitPlacing 캐싱
