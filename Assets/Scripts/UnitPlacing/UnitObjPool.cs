@@ -16,6 +16,7 @@ public class UnitObjPool : MonoBehaviour
 
     // 탱크 오브젝트 풀 배열
     Queue<GameObject>[] tankPool = new Queue<GameObject>[5];    // 큐 배열 .... 탱크의 인덱스와 일치 해야한다.
+    Queue<GameObject> tempTankPool = new Queue<GameObject>();   // 임시 큐 (큐 배열 선언시, 메모리 공간은 할당되어도 객체 할당이 없어서 필요)
 
     private void Awake()
     {        
@@ -30,23 +31,27 @@ public class UnitObjPool : MonoBehaviour
         {
             InitQueue(i, tankCountLimit[i]);
         }
-
-        Debug.Log(tankPool[0].ToArray());
     }
 
     void InitQueue(int objKind, int countLimit)
     {
+        // 임시 탱크 큐 초기화
+        tempTankPool.Clear();
+
         // 리밋만큼 생산
         for (int i = 0; i < countLimit; i++)
         {
-            tankPool[objKind].Enqueue(CreateNewObj(objKind));
+            tempTankPool.Enqueue(CreateNewObj(objKind));            
         }
+
+        // 임시 큐를 배열 큐에 할당
+        tankPool[objKind] = tempTankPool;
     }
 
     // 새 오브젝트 생성
     public GameObject CreateNewObj(int objKind)
     {
-        GameObject newObj = Instantiate(unitObjPrefab[objKind], transform);
+        GameObject newObj = Instantiate(unitObjPrefab[objKind], this.transform);
         newObj.SetActive(false);
         return newObj;
     }
