@@ -52,6 +52,8 @@ public class UnitPlacing : MonoBehaviour
     //private TankCtrl virtualUnitObj = null;
     private GameObject virtualUnitObj = null;          // 아직 배치되지 않은 상태의 유닛 오브젝트
     Vector3 targetPos = Vector3.zero;
+    Ray ray = new Ray();
+    RaycastHit hit = new RaycastHit();
     //======================================================================================== ↑ 변수 선언부
 
 
@@ -59,28 +61,27 @@ public class UnitPlacing : MonoBehaviour
     //---------------------------------------------------------------------------- Start()
     void Start()
     {
-        //// 유닛 배치 버튼 클릭 감지
-        //if (unitPlace_Btn != null && unitPlace_Btn.enabled == true)
-        //{
-        //    unitPlace_Btn.onClick.AddListener(() =>
-        //    {
-        //        if (StartEndCtrl.g_GameState != GameState.GS_Playing)
-        //            return;
+        // 유닛 배치 버튼 클릭 감지
+        if (unitPlace_Btn != null && unitPlace_Btn.enabled == true)
+        {
+            unitPlace_Btn.onClick.AddListener(() =>
+            {
+                if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
+                    return;
 
-        //        placingState = UnitPlacingState.INSTANCE;
-        //        virtualUnitObj = InstanceUnit(unitPlace_Btn);   // 유닛 생성
-        //        virtualUnitObj.GetComponent<VirtualObjMove>().objIndex = 0;     // 임시로 인덱스 할당
-        //    });
-        //}
+                placingState = UnitPlacingState.INSTANCE;
+                virtualUnitObj = InstanceUnit(unitPlace_Btn);   // 유닛 생성
+                virtualUnitObj.GetComponent<VirtualObjMove>().objIndex = 0;     // 임시로 인덱스 할당
+            });
+        }
 
-        MonitorButton();
     }
     //---------------------------------------------------------------------------- Start()
 
     // 성능 향상을 위한 LateUpdate 사용
     void Update()
     {
-        if (StartEndCtrl.g_GameState != GameState.GS_Playing)
+        if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
             return;
 
         // 진행 상태를 확인하며 모든 버튼을 꺼주는 함수 실행
@@ -90,130 +91,54 @@ public class UnitPlacing : MonoBehaviour
     //======================================================================================== ↑ 유니티 함수 부분
 
     //======================================================================================== ↓ 사용자 정의 함수 부분
-
-    private void MonitorButton()
-    {
-        // 인덱스를 위한 변수 선언
-        int normal = 0, speed = 1, repair = 2, solid = 3, cannon = 4;
-
-        // 노멀 탱크 버튼 클릭 감지
-        if (unitButton[normal] != null && unitButton[normal].enabled == true)
-        {
-            unitButton[normal].onClick.AddListener(() =>
-            {
-                // 게임 시작이 아니면 리턴 처리한다.
-                if (StartEndCtrl.g_GameState != GameState.GS_Playing)
-                    return;
-
-                // 최대 생산 수 이상이면 return
-                if (UnitObjPool.Inst.activeTankCount[normal] >= UnitObjPool.Inst.tankCountLimit[normal])
-                    return;
-
-                placingState = UnitPlacingState.INSTANCE;
-                virtualUnitObj = unitButton[normal].GetComponent<UnitButtonInfo>().InstanceUnit();       // 버튼 내의 가상 Obj 인스턴스
-            });
-        }
-
-        // 스피드 탱크 버튼 클릭 감지
-        if (unitButton[speed] != null && unitButton[speed].enabled == true)
-        {
-            unitButton[speed].onClick.AddListener(() =>
-            {
-                // 게임 시작이 아니면 리턴 처리한다.
-                if (StartEndCtrl.g_GameState != GameState.GS_Playing)
-                    return;
-
-                // 최대 생산 수 이상이면 return
-                if (UnitObjPool.Inst.activeTankCount[speed] >= UnitObjPool.Inst.tankCountLimit[speed])
-                    return;
-
-                placingState = UnitPlacingState.INSTANCE;
-                virtualUnitObj = unitButton[speed].GetComponent<UnitButtonInfo>().InstanceUnit();       // 버튼 내의 가상 Obj 인스턴스
-            });
-        }
-
-        // 리페어 탱크 버튼 클릭 감지
-        if (unitButton[repair] != null && unitButton[repair].enabled == true)
-        {
-            unitButton[repair].onClick.AddListener(() =>
-            {
-                // 게임 시작이 아니면 리턴 처리한다.
-                if (StartEndCtrl.g_GameState != GameState.GS_Playing)
-                    return;
-
-                // 최대 생산 수 이상이면 return
-                if (UnitObjPool.Inst.activeTankCount[repair] >= UnitObjPool.Inst.tankCountLimit[repair])
-                    return;
-
-                placingState = UnitPlacingState.INSTANCE;
-                virtualUnitObj = unitButton[repair].GetComponent<UnitButtonInfo>().InstanceUnit();       // 버튼 내의 가상 Obj 인스턴스
-            });
-        }
-
-        // 솔리드 탱크 버튼 클릭 감지
-        if (unitButton[solid] != null && unitButton[solid].enabled == true)
-        {
-            unitButton[solid].onClick.AddListener(() =>
-            {
-                // 게임 시작이 아니면 리턴 처리한다.
-                if (StartEndCtrl.g_GameState != GameState.GS_Playing)
-                    return;
-
-                // 최대 생산 수 이상이면 return
-                if (UnitObjPool.Inst.activeTankCount[solid] >= UnitObjPool.Inst.tankCountLimit[solid])
-                    return;
-
-                placingState = UnitPlacingState.INSTANCE;
-                virtualUnitObj = unitButton[solid].GetComponent<UnitButtonInfo>().InstanceUnit();       // 버튼 내의 가상 Obj 인스턴스
-            });
-        }
-
-        // 캐논 탱크 버튼 클릭 감지
-        if (unitButton[cannon] != null && unitButton[cannon].enabled == true)
-        {
-            unitButton[cannon].onClick.AddListener(() =>
-            {
-                // 게임 시작이 아니면 리턴 처리한다.
-                if (StartEndCtrl.g_GameState != GameState.GS_Playing)
-                    return;
-
-                // 최대 생산 수 이상이면 return
-                if (UnitObjPool.Inst.activeTankCount[cannon] >= UnitObjPool.Inst.tankCountLimit[cannon])
-                    return;
-
-                placingState = UnitPlacingState.INSTANCE;
-                virtualUnitObj = unitButton[cannon].GetComponent<UnitButtonInfo>().InstanceUnit();       // 버튼 내의 가상 Obj 인스턴스
-            });
-        }
-    }
-
     //---------------------------------------------------------------------------- OffAllUnitButton()
     //--------- 유닛 배치 모드 시 모든 버튼을 꺼주는 함수
     private void OffAllUnitButton()
     {
         if (placingState == UnitPlacingState.PRIMARY)
         {
-            // 테스트용 버튼 처리
-            //unitPlace_Btn.enabled = true;
-
-            for (int i = 0; i < unitButton.Length; i++)
-            {
-                if (unitButton[i].enabled == false)
-                    unitButton[i].enabled = true;
-            }
+            unitPlace_Btn.enabled = true;
+            //for (int i = 0; i < unitButton.Length; i++)
+            //{
+            //    if (unitButton[i].enabled == false)
+            //        unitButton[i].enabled = true;                                
+            //}
 
             return;
         }
 
         else
         {
-            for (int i = 0; i < unitButton.Length; i++)
-            {
-                unitButton[i].enabled = false;
-            }
+            //for (int i = 0; i < unitButton.Length; i++)
+            //{
+            //    unitButton[i].enabled = false;
+            //}
         }
     }
     //---------------------------------------------------------------------------- OffAllUnitButton()
 
+
+    //---------------------------------------------------------------------------- InstanceUnit()
+    //--------- 유닛을 생성해주는 함수
+    private GameObject InstanceUnit(Button button)
+    {        
+        // 테스트용 !!
+        button.enabled = false;     // 버튼 활성화 꺼줌
+     
+        // 얘는 진짜용!!
+        UnitButtonInfo unitButton = button.GetComponent<UnitButtonInfo>();
+
+        // 버튼에 해당하는 유닛 인스턴스
+        // unitButton.InstanceUnit();
+
+        // 여기에 갯수 파악해서 return 시키는 함수 추가해야함
+
+        // 테스트를 위한 인스턴스
+        GameObject testobj = (GameObject)Instantiate(testObj);      // 여기에 testObj 대신 버튼 정보에서 유닛을 할당받아 넣어야한다.
+        testObj.transform.position = button.transform.position;
+
+        return testObj;
+    }
+    //---------------------------------------------------------------------------- InstanceUnit()
     //======================================================================================== ↑ 사용자 정의 함수 부분
 }
