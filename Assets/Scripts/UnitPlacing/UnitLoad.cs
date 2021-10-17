@@ -186,5 +186,11 @@ public class UnitLoad : MonoBehaviour
         }
     }
 
+    // AttackUnit을 리스트로 받아서 가지고 있는게 매우 현명할 듯...
+    // 공격 유닛을 서버로부터 받아오는 함수
+    private void LoadAttackUnit()
+    {
+     
+    }
 
 }
