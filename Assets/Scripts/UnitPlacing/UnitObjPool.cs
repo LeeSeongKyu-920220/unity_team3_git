@@ -72,6 +72,7 @@ public class UnitObjPool : MonoBehaviour
             var obj = Inst.tankPool[objKind].Dequeue();
             obj.transform.SetParent(null);
             obj.transform.position = setPos;
+            obj.GetComponent<TankCtrl>().SetDestination(obj.GetComponent<TankCtrl>().beginTarPos.position);
             obj.gameObject.SetActive(true);
             activeTankCount[objKind]++;
             return obj;
