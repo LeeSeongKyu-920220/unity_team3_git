@@ -94,7 +94,7 @@ public class UnitObjPool : MonoBehaviour
     /// 유닛을 유닛 오브젝트 풀로 반환시켜주는 함수
     /// </summary>
     /// <param name="tank">반환시킬 탱크</param>
-    /// <param name="objKind">반환시킬 풀 인덱스</param>
+    /// <param name="objKind">반환시킬 풀 인덱스(탱크타입 ... 0 == Normal)</param>
     public void ReturnObj(GameObject tank, int objKind)
     {
         tank.gameObject.SetActive(false);

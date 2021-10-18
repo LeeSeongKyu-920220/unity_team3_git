@@ -757,4 +757,20 @@ public class TankCtrl : MonoBehaviour
             SetDestination(beginTarPos.position);
         }
     }
+
+    #region 탱크 사망처리 부분
+    // -------------- 탱크의 사망을 감지하는 함수
+    private void MonitorTankDie()
+    {
+        // 현재 HP가 0 이하인 경우
+        if (curHp <= 0)
+        {
+            // 추후 경로 오류 발생시 path만 수정!
+            string resorcepath = "SoundEffect/Explosion01";
+            AudioClip audio = Resources.Load(resorcepath) as AudioClip;
+            AudioSource audioSource = new AudioSource();
+            audioSource.PlayOneShot(audio);
+        }
+    }
+    #endregion
 }
