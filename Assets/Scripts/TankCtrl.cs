@@ -146,6 +146,8 @@ public class TankCtrl : MonoBehaviour
         Cannon();
         Barrier();
 
+        // 탱크 사망 감지
+        MonitorTankDie();
     }
 
     void Init()
@@ -765,11 +767,16 @@ public class TankCtrl : MonoBehaviour
         // 현재 HP가 0 이하인 경우
         if (curHp <= 0)
         {
+            // ---- 폭발 오디오 재생하는 부분
             // 추후 경로 오류 발생시 path만 수정!
-            string resorcepath = "SoundEffect/Explosion01";
+            string resorcepath = "SoundEffect/Explosion01.ogg";
             AudioClip audio = Resources.Load(resorcepath) as AudioClip;
-            AudioSource audioSource = new AudioSource();
-            audioSource.PlayOneShot(audio);
+            Camera.main.GetComponent<AudioSource>().PlayOneShot(audio);
+
+            // ----- 탱크를 오브젝트 풀로 돌리는 부분
+            this.gameObject.SetActive(false);
+            UnitObjPool.Inst.ReturnObj(this.gameObject, (int)m_Type);
+            this.curHp = maxHp;     // 피를 다시 원상 복구
         }
     }
     #endregion
