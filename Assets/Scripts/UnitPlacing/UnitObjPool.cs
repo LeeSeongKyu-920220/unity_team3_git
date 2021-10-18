@@ -73,6 +73,7 @@ public class UnitObjPool : MonoBehaviour
             activeTankCount[objKind]++;
             var obj = Inst.tankPool[objKind].Dequeue();
             obj.transform.SetParent(null);
+            obj.GetComponent<NavMeshAgent>().enabled = true;
             obj.transform.position = setPos;
             obj.SetActive(true);
             StartCoroutine(obj.GetComponent<TankCtrl>().SetDestinationCo());
