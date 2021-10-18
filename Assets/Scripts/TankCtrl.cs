@@ -540,7 +540,7 @@ public class TankCtrl : MonoBehaviour
     }
     // 유닛 스킬 구현 부분 ------------------------------------------------------------------------------------------------------------------------------
     #endregion
-    IEnumerator SetDestinationCo()
+    public IEnumerator SetDestinationCo()
     {
         yield return new WaitForSeconds(0.2f);
         SetDestination(beginTarPos.position);

@@ -69,23 +69,23 @@ public class UnitObjPool : MonoBehaviour
         // 풀에 유닛이 존재할 경우
         if (Inst.tankPool[objKind].Count > 0)
         {
+            activeTankCount[objKind]++;
             var obj = Inst.tankPool[objKind].Dequeue();
             obj.transform.SetParent(null);
             obj.transform.position = setPos;
-            obj.GetComponent<TankCtrl>().SetDestination(obj.GetComponent<TankCtrl>().beginTarPos.position);
             obj.gameObject.SetActive(true);
-            activeTankCount[objKind]++;
+            StartCoroutine(obj.gameObject.GetComponent<TankCtrl>().SetDestinationCo());
             return obj;
         }
         
         // 풀에 유닛이 존재하지 않을 경우 새로 생산한다.
         else
         {
+            activeTankCount[objKind]++;
             var newObj = Inst.CreateNewObj(objKind);
             newObj.transform.SetParent(null);
             newObj.transform.position = setPos;
             newObj.gameObject.SetActive(true);
-            activeTankCount[objKind]++;
             return newObj;
         }
     }

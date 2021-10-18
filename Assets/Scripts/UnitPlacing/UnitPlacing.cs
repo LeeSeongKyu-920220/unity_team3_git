@@ -77,16 +77,23 @@ public class UnitPlacing : MonoBehaviour
     }
     //---------------------------------------------------------------------------- Start()
 
-    // 성능 향상을 위한 LateUpdate 사용
+    //---------------------------------------------------------------------------- Update()
     void Update()
     {
         if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
             return;
 
+        if (placingState == UnitPlacingState.INSTANCE && Input.GetKeyDown(KeyCode.Escape))
+        {
+            placingState = UnitPlacingState.PRIMARY;
+            Destroy(virtualUnitObj);
+            return;
+        }
+
         // 진행 상태를 확인하며 모든 버튼을 꺼주는 함수 실행
         OffAllUnitButton();
     }
-    //---------------------------------------------------------------------------- FixedUpdate()
+    //---------------------------------------------------------------------------- Update()
     //======================================================================================== ↑ 유니티 함수 부분
 
     //======================================================================================== ↓ 사용자 정의 함수 부분
@@ -95,6 +102,8 @@ public class UnitPlacing : MonoBehaviour
     //--------- 버튼을 모니터 해주는 함수
     private void MonitorButton()
     {
+
+
         // 인덱스를 위한 변수 선언
         int normal = 0, speed = 1, repair = 2, solid = 3, cannon = 4;
 
