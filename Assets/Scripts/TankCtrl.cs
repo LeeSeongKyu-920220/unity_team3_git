@@ -279,6 +279,7 @@ public class TankCtrl : MonoBehaviour
         if (target_Dist.Count <= 0)
         {
             target_Obj = null;
+            isMoveOn = true;
             return;
         }
             
@@ -290,7 +291,7 @@ public class TankCtrl : MonoBehaviour
         target_Obj = GameMgr.Inst.enemy_List[a].gameObject;
 
         if (target_Obj.name.Contains("Enemy_Base") == true)
-            SetDestination(this.transform.position);
+            isMoveOn = false;
 
         target_Pos = target_Obj.transform.position;
         target_Pos.y = 0.0f;
@@ -419,6 +420,7 @@ public class TankCtrl : MonoBehaviour
             target_Obj = null;
             mGTimer = 0.0f;
             bulletIdx = 0;
+            isMoveOn = true;
             return;
         }
 
@@ -430,7 +432,7 @@ public class TankCtrl : MonoBehaviour
         target_Obj = GameMgr.Inst.enemy_List[a].gameObject;
 
         if (target_Obj.name.Contains("Enemy_Base") == true)
-            SetDestination(this.transform.position);
+            isMoveOn = false;
 
         target_Pos = target_Obj.transform.position;
         target_Pos.y = 0.0f;
