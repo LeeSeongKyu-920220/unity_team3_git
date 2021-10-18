@@ -84,22 +84,15 @@ public class TankCtrl : MonoBehaviour
         // 탱크 기본정보 받아오기
         //Init();
         // 탱크 기본정보 받아오기
-        StartSetting();
-        //cannon_Obj.transform.eulerAngles = new Vector3(-45, 0, 0);
-    }
-
-    public void StartSetting()
-    {
         movePath = new NavMeshPath();
         navAgent = this.gameObject.GetComponent<NavMeshAgent>();
         navAgent.updateRotation = false;
         beginTarPos = GameObject.Find("Begin_Tar_Pos").transform;
-        turret_Obj.transform.rotation = Quaternion.Euler(0, 0, 0);
 
-        //StartCoroutine(SetDestinationCo());
-        SetDestination(beginTarPos.position);
+        StartCoroutine(SetDestinationCo());
         Init();
         enemies = new List<GameObject>();
+        //cannon_Obj.transform.eulerAngles = new Vector3(-45, 0, 0);
     }
 
     void Update()
@@ -153,8 +146,6 @@ public class TankCtrl : MonoBehaviour
         Cannon();
         Barrier();
 
-        // 탱크 사망 감지
-        MonitorTankDie();
     }
 
     void Init()
@@ -210,9 +201,8 @@ public class TankCtrl : MonoBehaviour
 
         if (hp_Img != null)
             hp_Img.fillAmount = curHp / maxHp;
-
-        if (curHp < 0)
-            curHp = 0;
+        
+        MonitorTankDie();
     }
 
     #region ---------- 탱크 이동 부분(임시)
@@ -594,7 +584,7 @@ public class TankCtrl : MonoBehaviour
 
     IEnumerator ShootImp()
     {
-        while(true)
+        while (true)
         {
             if (missile == null)
             {
@@ -620,7 +610,7 @@ public class TankCtrl : MonoBehaviour
     }
     // 유닛 스킬 구현 부분 ------------------------------------------------------------------------------------------------------------------------------
     #endregion
-    IEnumerator SetDestinationCo()
+    public IEnumerator SetDestinationCo()
     {
         yield return new WaitForSeconds(0.2f);
         SetDestination(beginTarPos.position);
@@ -824,22 +814,6 @@ public class TankCtrl : MonoBehaviour
     }
     #endregion
 
-    public void OnTriggerEnter(Collider coll)
-    {
-        if(coll.name.Contains("Enemy_Base") == true)
-        {
-            SetDestination(this.transform.position);
-        }
-    }
-
-    public void OnTriggerExit(Collider coll)
-    {
-        if (coll.name.Contains("Enemy_Base") == true)
-        {
-            SetDestination(beginTarPos.position);
-        }
-    }
-
     #region 탱크 사망처리 부분
     // -------------- 탱크의 사망을 감지하는 함수
     private void MonitorTankDie()
@@ -847,6 +821,8 @@ public class TankCtrl : MonoBehaviour
         // 현재 HP가 0 이하인 경우
         if (curHp <= 0)
         {
+            this.transform.rotation = Quaternion.Euler(0, 0, 0);
+            turret_Obj.transform.rotation = this.transform.rotation;
             // ---- 폭발 오디오 재생하는 부분
             // 추후 경로 오류 발생시 path만 수정!
             string resorcepath = "SoundEffect/Explosion01.ogg";

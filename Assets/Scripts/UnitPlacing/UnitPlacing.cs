@@ -83,6 +83,13 @@ public class UnitPlacing : MonoBehaviour
         if (StartEndCtrl.Inst.g_GameState != GameState.GS_Playing)
             return;
 
+        if (placingState == UnitPlacingState.INSTANCE && Input.GetKeyDown(KeyCode.Escape))
+        {
+            placingState = UnitPlacingState.PRIMARY;
+            Destroy(virtualUnitObj);
+            return;
+        }
+
         // 진행 상태를 확인하며 모든 버튼을 꺼주는 함수 실행
         OffAllUnitButton();
     }

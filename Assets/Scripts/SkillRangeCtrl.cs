@@ -30,6 +30,9 @@ public class SkillRangeCtrl : MonoBehaviour
 
         for(int ii = 0; ii < target_List.Count; ii++)
         {
+            if (target_List[ii] == null)
+                return;
+
             if (target_List[ii].name.Contains("Enemy") == true)
                 target_List[ii].GetComponent<EnemyCtrl>().Damage(50);
             else
