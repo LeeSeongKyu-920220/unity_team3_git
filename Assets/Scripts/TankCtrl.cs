@@ -84,16 +84,22 @@ public class TankCtrl : MonoBehaviour
         // 탱크 기본정보 받아오기
         //Init();
         // 탱크 기본정보 받아오기
+        StartSetting();
+        //cannon_Obj.transform.eulerAngles = new Vector3(-45, 0, 0);
+    }
 
+    public void StartSetting()
+    {
         movePath = new NavMeshPath();
         navAgent = this.gameObject.GetComponent<NavMeshAgent>();
         navAgent.updateRotation = false;
         beginTarPos = GameObject.Find("Begin_Tar_Pos").transform;
-        
-        StartCoroutine(SetDestinationCo());
+        turret_Obj.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+        //StartCoroutine(SetDestinationCo());
+        SetDestination(beginTarPos.position);
         Init();
         enemies = new List<GameObject>();
-        //cannon_Obj.transform.eulerAngles = new Vector3(-45, 0, 0);
     }
 
     void Update()
