@@ -730,7 +730,7 @@ public class TankCtrl : MonoBehaviour
     }
 
     // MoveToPath 관련 변수
-    bool isSuccessed = true;
+    [HideInInspector] public bool isSuccessed = true;
     Vector3 curCPos = Vector3.zero;
     Vector3 cacDestV = Vector3.zero;
     Vector3 targetDir;
@@ -848,9 +848,10 @@ public class TankCtrl : MonoBehaviour
             Camera.main.GetComponent<AudioSource>().PlayOneShot(audio);
 
             // ----- 탱크를 오브젝트 풀로 돌리는 부분
-            this.gameObject.SetActive(false);
             UnitObjPool.Inst.ReturnObj(this.gameObject, (int)m_Type);
-            this.curHp = maxHp;     // 피를 다시 원상 복구
+            curHp = maxHp;
+            hp_Img.fillAmount = 1.0f;
+            ClearPath();
         }
     }
     #endregion
