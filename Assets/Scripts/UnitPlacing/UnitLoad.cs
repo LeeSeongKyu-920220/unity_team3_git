@@ -77,6 +77,8 @@ public class UnitLoad : MonoBehaviour
         userID = 1;             // 임시 유저 ID 할당 나중에 플레이어 값을 가져와야함
                                 // 글로벌 변수의 ID로 대체해야한다.
 
+        
+
         //// !!!!!! 글로벌 변수와 컬럼이 완벽히 일치되면 주석을 풀어주세요!!!
         //// ↓↓↓↓↓↓↓↓ 글로벌에서부터 아이템의 사용 횟수를 받아오는 함수 실행 
         //LoadAttackUnit();
@@ -135,8 +137,7 @@ public class UnitLoad : MonoBehaviour
         //
         // ↑↑↑↑↑ 위 과정을 모두 서버에서 검사했음...!!!
         // 결국 생성된 JSON은 내가 구매했고 공격팀인 경우에만 추출됨
-        //==============================================
-
+        //=============================================
 
         // 유저 정보를 리스트로 받아온다.
         for (int i = 0; i < N.Count; i++)
@@ -190,32 +191,31 @@ public class UnitLoad : MonoBehaviour
         }
     }
 
-
     // UserUnit 클래스에서 enum UnitKind 를 enum TankType과 일치시켜주세요....!
     // AttackUnit을 리스트로 받아서 가지고 있는게 매우 현명할 듯...
     // 공격 유닛을 글로벌에서 받아오는 함수
     private void LoadAttackUnit()
     {
-        //for (int i = 0; i < GlobalValue.m_AttUnitUserItem.Count; i++)
-        //{
-        //    // 내가 구매했고 공격 아이템인지 확인
-        //    if (GlobalValue.m_AttUnitUserItem[i].m_isBuy == 1 && GlobalValue.m_AttUnitUserItem[i].m_unitType == UnitType.Att)
-        //    {
-        //        // ↓↓↓↓↓↓ 이거 꼭 확인해야함
-        //        // UnitKind 의 Unit_0 == NormalTank 라면....
-        //        if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_0)
-        //            UnitObjPool.Inst.tankCountLimit[0] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
+        for (int i = 0; i < GlobalValue.m_AttUnitUserItem.Count; i++)
+        {
+            // 내가 구매했고 공격 아이템인지 확인
+            if (GlobalValue.m_AttUnitUserItem[i].m_isBuy == 1 && GlobalValue.m_AttUnitUserItem[i].m_unitType == UnitType.Att)
+            {
+                // ↓↓↓↓↓↓ 이거 꼭 확인해야함
+                // UnitKind 의 Unit_0 == NormalTank 라면....
+                if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_0)
+                    UnitObjPool.Inst.tankCountLimit[0] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
 
-        //        else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_1)
-        //            UnitObjPool.Inst.tankCountLimit[1] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
+                else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_1)
+                    UnitObjPool.Inst.tankCountLimit[1] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
 
-        //        else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_2)
-        //            UnitObjPool.Inst.tankCountLimit[2] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
+                else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_2)
+                    UnitObjPool.Inst.tankCountLimit[2] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
 
-        //        else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_3)
-        //            UnitObjPool.Inst.tankCountLimit[3] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
-        //    }
-        //}
+                else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_3)
+                    UnitObjPool.Inst.tankCountLimit[3] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
+            }
+        }
     }
 
 }
