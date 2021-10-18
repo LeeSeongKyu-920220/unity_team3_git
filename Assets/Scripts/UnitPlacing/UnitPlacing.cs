@@ -24,8 +24,6 @@ public enum UnitPlacingState
 {
     PRIMARY = 0,   // 초기 단계
     INSTANCE,      // 유닛 생성 단계
-    PLACING,       // 유닛 배치
-    COMPLETE,      // 유닛 배치 완료 단계
 }
 
 public class UnitPlacing : MonoBehaviour

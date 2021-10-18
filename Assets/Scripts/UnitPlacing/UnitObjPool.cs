@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class UnitObjPool : MonoBehaviour
 {
@@ -55,6 +56,7 @@ public class UnitObjPool : MonoBehaviour
     {
         GameObject newObj = Instantiate(unitObjPrefab[objKind], this.transform);
         newObj.SetActive(false);
+        newObj.GetComponent<NavMeshAgent>().enabled = true;
         return newObj;
     }
 
