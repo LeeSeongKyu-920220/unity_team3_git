@@ -37,7 +37,7 @@ public class SkillRangeCtrl : MonoBehaviour
                 TankCtrl ctrl = target_List[ii].GetComponent<TankCtrl>();
                 if(ctrl != null)
                     target_List[ii].GetComponent<TankCtrl>().TakeDamage(50);
-
+                    
             }
                 
         }

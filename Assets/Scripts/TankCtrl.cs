@@ -139,7 +139,7 @@ public class TankCtrl : MonoBehaviour
         }
 
         TankUIRotate();
-        //NavUpdate(); // 길찾기
+        NavUpdate(); // 길찾기
         Attack();
         // 유닛특성 함수들
         Repair(20); // 리페어 탱크인 경우에만 실행
