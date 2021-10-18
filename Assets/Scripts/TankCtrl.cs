@@ -31,7 +31,6 @@ public class TankCtrl : MonoBehaviour
     public GameObject bullet_Obj = null;    // 총알 오브젝트
     public GameObject turret_Explo = null;  // 발사 이펙트 오브젝트
     public GameObject cannon_Obj = null;    // 포대 오브젝트
-    SphereCollider range_Coll;
 
     //float h, v;
 
@@ -90,7 +89,6 @@ public class TankCtrl : MonoBehaviour
         navAgent = this.gameObject.GetComponent<NavMeshAgent>();
         navAgent.updateRotation = false;
         beginTarPos = GameObject.Find("Begin_Tar_Pos").transform;
-        range_Coll = this.GetComponent<SphereCollider>();
         
         StartCoroutine(SetDestinationCo());
         Init();
@@ -163,7 +161,6 @@ public class TankCtrl : MonoBehaviour
         curHp = maxHp;
         skillCool = tankInfo.skillCool;
         attRange = tankInfo.attRange;
-        range_Coll.radius = attRange;
         // 탱크 기본정보 받아오기
     }
 
