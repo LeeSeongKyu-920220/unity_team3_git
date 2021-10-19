@@ -769,9 +769,9 @@ public class TankCtrl : MonoBehaviour
         {
             // ---- 폭발 오디오 재생하는 부분
             // 추후 경로 오류 발생시 path만 수정!
-            string resorcepath = "SoundEffect/Explosion01.ogg";
-            AudioClip audio = Resources.Load(resorcepath) as AudioClip;
-            Camera.main.GetComponent<AudioSource>().PlayOneShot(audio);
+            string resorcepath = "SoundEffect/ExpSound1.mp3";
+            AudioClip audio = (AudioClip)Resources.Load(resorcepath);
+            this.GetComponent<AudioSource>().PlayOneShot(audio);
 
             // ----- 탱크를 오브젝트 풀로 돌리는 부분
             UnitObjPool.Inst.ReturnObj(this.gameObject, (int)m_Type);
