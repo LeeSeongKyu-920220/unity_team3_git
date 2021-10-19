@@ -58,9 +58,6 @@ public class UnitInfo
  */
 public class UnitLoad : MonoBehaviour
 {
-    // 싱글톤 활용을 위한 자기 자신 선언
-    public static UnitLoad unitLoad;
-
     // ↓↓↓↓↓ 임시 유저 아이디
     int userID = 0;
 
@@ -71,8 +68,6 @@ public class UnitLoad : MonoBehaviour
 
     void Awake()
     {
-        unitLoad = this;            // 싱글톤 활용을 위한 자기 자신 할당
-
         // ↓↓↓↓↓ 임시 할당
         userID = 1;             // 임시 유저 ID 할당 나중에 플레이어 값을 가져와야함
                                 // 글로벌 변수의 ID로 대체해야한다.
