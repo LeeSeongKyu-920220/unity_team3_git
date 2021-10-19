@@ -65,7 +65,7 @@ public class UnitObjPool : MonoBehaviour
     /// <param name="objKind">오브젝트의 종류</param>
     /// <param name="setPos">오브젝트의 위치</param>
     /// <returns></returns>
-    public GameObject GetObj(int objKind, Vector3 setPos)
+    public GameObject GetObj(int objKind, Vector3 setPos, bool isLeft)
     {
         // 풀에 유닛이 존재할 경우
         if (Inst.tankPool[objKind].Count > 0)
@@ -73,6 +73,16 @@ public class UnitObjPool : MonoBehaviour
             activeTankCount[objKind]++;
             var obj = Inst.tankPool[objKind].Dequeue();
             obj.transform.SetParent(null);
+
+            if (isLeft == true)
+            {
+                obj.GetComponent<NavMeshAgent>().areaMask = (1 << 0) | (1 << 3);
+            }
+            else if (isLeft == false)
+            {
+                obj.GetComponent<NavMeshAgent>().areaMask = (1 << 0) | (1 << 4);                
+            }
+
             obj.GetComponent<NavMeshAgent>().enabled = true;
             obj.transform.position = setPos;
             obj.SetActive(true);

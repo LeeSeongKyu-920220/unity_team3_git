@@ -20,9 +20,11 @@ public class UnitButtonInfo : MonoBehaviour
 
     int index = -1;     // 해당 유닛의 인덱스 (0 == 노멀탱크 ..... TankCtrl의 TankType과 같음)
 
+
     private void Start()
     {
-        index = (int)virtualPrefab.GetComponent<VirtualObjMove>().realObj.GetComponent<TankCtrl>().m_Type;
+        // 캐싱
+        index = (int)virtualPrefab.GetComponent<VirtualObjMove>().realObj.GetComponent<TankCtrl>().m_Type;      // 탱크 타입 캐싱
     }
 
     private void Update()
