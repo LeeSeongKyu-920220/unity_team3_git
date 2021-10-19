@@ -79,20 +79,31 @@ public class TankCtrl : MonoBehaviour
     public GameObject missilePrefab;
     public GameObject barrier;
     // 유닛 특성 관련 변수
+
+    // 탱크 움직임 오디오소스
+    AudioSource m_MvSource;
+
+    private void Awake()
+    {
+        // 이 탱크의 오디오소스 할당
+        m_MvSource = this.GetComponent<AudioSource>();
+    }
+
     void Start()
     {
         // 탱크 기본정보 받아오기
         //Init();
         // 탱크 기본정보 받아오기
-
         movePath = new NavMeshPath();
         navAgent = this.gameObject.GetComponent<NavMeshAgent>();
         navAgent.updateRotation = false;
         beginTarPos = GameObject.Find("Begin_Tar_Pos").transform;
-        
+
         StartCoroutine(SetDestinationCo());
         Init();
+        enemies = new List<GameObject>();
         //cannon_Obj.transform.eulerAngles = new Vector3(-45, 0, 0);
+
     }
 
     void Update()
@@ -146,8 +157,6 @@ public class TankCtrl : MonoBehaviour
         Cannon();
         Barrier();
 
-        // 탱크 사망 감지
-        MonitorTankDie();
     }
 
     void Init()
@@ -197,15 +206,14 @@ public class TankCtrl : MonoBehaviour
         return a_TarPosY;
     }
 
-    void TakeDamage(int a_Damage)
+    public void TakeDamage(int a_Damage)
     {
         curHp -= a_Damage;
 
         if (hp_Img != null)
             hp_Img.fillAmount = curHp / maxHp;
-
-        if (curHp < 0)
-            curHp = 0;
+        
+        MonitorTankDie();
     }
 
     #region ---------- 탱크 이동 부분(임시)
@@ -235,14 +243,18 @@ public class TankCtrl : MonoBehaviour
 
     void Attack()
     {
-        if (GameMgr.Inst.enemy_List.Count <= 0)
+        if (TankType.Speed == m_Type || TankType.Cannon == m_Type) // 스킬 사용중일 때는 일반공격 못하도록
             return;
 
         if (att_Delay > 0.0f)
             return;
 
-        if (skill_Delay <= 0.0f && (TankType.Speed == m_Type || TankType.Cannon == m_Type)) // 스킬 사용중일 때는 일반공격 못하도록
+        if (GameMgr.Inst.enemy_List.Count <= 0)
+        {
+            target_Obj = null;
             return;
+        }
+
 
         List<float> target_Dist = new List<float>();
         List<int> index_List = new List<int>();
@@ -253,8 +265,11 @@ public class TankCtrl : MonoBehaviour
             {
                 GameMgr.Inst.enemy_List.Remove(GameMgr.Inst.enemy_List[ii]);    // null 값이 저장되어 있으면 지우기
 
-                if (GameMgr.Inst.enemy_List.Count <= 0)  // null 값을 지워서 리스트가 비어있으면 함수를 빠져 나감
+                if (GameMgr.Inst.enemy_List.Count <= 0)
+                {
+                    target_Obj = null;
                     return;
+                }
             }
             else
             {
@@ -273,6 +288,7 @@ public class TankCtrl : MonoBehaviour
         if (target_Dist.Count <= 0)
         {
             target_Obj = null;
+            isMoveOn = true;
             return;
         }
             
@@ -284,16 +300,16 @@ public class TankCtrl : MonoBehaviour
         target_Obj = GameMgr.Inst.enemy_List[a].gameObject;
 
         if (target_Obj.name.Contains("Enemy_Base") == true)
-        {
-            SetDestination(this.transform.position);
-        }
+            isMoveOn = false;
 
         target_Pos = target_Obj.transform.position;
         target_Pos.y = 0.0f;
         att_Delay = attRate;
         GameObject bullet = Instantiate(bullet_Obj, fire_Pos.transform.position, fire_Pos.transform.rotation);
         bullet.GetComponent<BulletCtrl>().target_Obj = target_Obj;
-        Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
+        GameObject explo_Obj = Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
+        explo_Obj.transform.SetParent(fire_Pos.transform);
+
     }
 
     #endregion
@@ -353,57 +369,97 @@ public class TankCtrl : MonoBehaviour
         }
 
     }
+
     void MachineGun()
     {
         if (m_Type != TankType.Speed)
             return;
 
-        if (GameMgr.Inst.enemy_List.Count <= 0)
+        if (att_Delay > 0.0f)
             return;
 
-        if (skill_Delay > 0.0f)
+        if (mGTimer > 0.0f)
+        {
+            mGTimer -= Time.deltaTime;
             return;
+        }
+
+        if (GameMgr.Inst.enemy_List.Count <= 0)
+        {
+            target_Obj = null;
+            mGTimer = 0.0f;
+            bulletIdx = 0;
+            return;
+        }
+
 
         List<float> target_Dist = new List<float>();
+        List<int> index_List = new List<int>();
+
         for (int ii = 0; ii < GameMgr.Inst.enemy_List.Count;)
         {
             if (GameMgr.Inst.enemy_List[ii] == null)    // 타겟 리스트의 값이 null 인지 확인
             {
                 GameMgr.Inst.enemy_List.Remove(GameMgr.Inst.enemy_List[ii]);    // null 값이 저장되어 있으면 지우기
 
-                if (GameMgr.Inst.enemy_List.Count <= 0)  // null 값을 지워서 리스트가 비어있으면 함수를 빠져 나감
+                if (GameMgr.Inst.enemy_List.Count <= 0)
+                {
+                    target_Obj = null;
+                    mGTimer = 0.0f;
+                    bulletIdx = 0;
                     return;
+                }
             }
             else
             {
                 float dis = Vector3.Distance(tank_Pos, GameMgr.Inst.enemy_List[ii].transform.position);
-                target_Dist.Add(dis);
+
+                if (dis <= attRange)
+                {
+                    index_List.Add(ii);
+                    target_Dist.Add(dis);
+                }
+
                 ii++;
             }
         }
+
+        if (target_Dist.Count <= 0)
+        {
+            target_Obj = null;
+            mGTimer = 0.0f;
+            bulletIdx = 0;
+            isMoveOn = true;
+            return;
+        }
+
+
         int target_Index = 0;
         GetMinCheck(target_Dist, out target_Index);
+        int a = index_List[target_Index];
 
-        target_Obj = GameMgr.Inst.enemy_List[target_Index].gameObject;
+        target_Obj = GameMgr.Inst.enemy_List[a].gameObject;
+
+        if (target_Obj.name.Contains("Enemy_Base") == true)
+            isMoveOn = false;
+
         target_Pos = target_Obj.transform.position;
         target_Pos.y = 0.0f;
 
-        if(mGTimer > 0.0f)          // 탄환 격발 후 잠깐 사이의 텀
-            mGTimer -= Time.deltaTime;
 
         if (mGTimer <= 0.0f)
         {
             GameObject bullet = Instantiate(bullet_Obj, machineGun_Pos.transform.position, fire_Pos.transform.rotation);
             bullet.GetComponent<BulletCtrl>().target_Obj = target_Obj;
-            bullet.GetComponent<MeshRenderer>().material.SetColor("_Color",Color.red);
-            Instantiate(bullet_Obj, fire_Pos.transform.position, turret_Obj.transform.rotation);
+            //bullet.GetComponent<MeshRenderer>().material.SetColor("_Color",Color.red);
+            GameObject explo_Obj = Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
+            explo_Obj.transform.SetParent(fire_Pos.transform);
             mGTimer = mGRate; // 텀 충전
             bulletIdx++;
             if(bulletIdx == mGBullet) // 모든 탄환을 격발하고 나면 스킬쿨타임 돌기 시작
             { 
-                skill_Delay = skillCool;
                 att_Delay = attRate; // 스킬 사용후 바로 기본공격 못하게
-                Debug.Log(skillCool);
+                mGTimer = 0.0f;
                 bulletIdx = 0;
             }
         }
@@ -425,20 +481,47 @@ public class TankCtrl : MonoBehaviour
     float dat;  //도착점 도달 시간 
     float actionTimer = 2.0f;
     int ranEnemyIdx = -1;
-    GameObject[] enemies = null;
+    float cannonSD = 30.0f; // 미사일 차량 스킬 사거리
+    List<GameObject> enemies = null;
     // -------- Cannon 유닛 스킬 관련 변수
     void Cannon() // 랜덤으로 선택한 적에게 포물선으로 미사일 타격
     {
         if (m_Type != TankType.Cannon)
             return;
 
-        if (skill_Delay > 0.0f)
+        if (enemies.Count > 0) // 사거리 안에 적이 있으면 안움직임
+        {
+            isMoveOn = false;
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                if (enemies[i] == null)
+                    enemies.RemoveAt(i);
+            }
+        }
+        else
+            isMoveOn = true;   // 사거리 안에 적이 없으면 움직임
+
+        // 적 탐색 ---------------------------------------------------------------------------------------------------------
+        GameObject[] a_Enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        
+        for (int i = 0; i < a_Enemies.Length; i++)
+        {
+            if ((a_Enemies[i].transform.position - transform.position).magnitude < cannonSD) // 스킬 사거리를 통해 타겟측정
+            {
+                enemies.Add(a_Enemies[i]);
+            }
+        }
+
+        if (enemies.Count < 1) // 탐색된 적이 없으면 리턴
+            return;
+        // 적 탐색 ---------------------------------------------------------------------------------------------------------
+        if (skill_Delay > 0.0f) // 아직 스킬 쿨타임이 남아있다면 리턴
             return;
 
         if (missile == null && isShot == true) // 미사일 격추가 완료 되면
         {
             isShot = false;
-            isMoveOn = true; // 미사일 격추가 끝나면 다시 움직임.
+            //isMoveOn = true; // 미사일 격추가 끝나면 다시 움직임.
             skill_Delay = skillCool; // 스킬 쿨타임 재활성화
             att_Delay = attRate; // 스킬 사용후 바로 기본공격 못하게
             ranEnemyIdx = -1; // 적선택인덱스 초기화
@@ -459,10 +542,7 @@ public class TankCtrl : MonoBehaviour
 
             if(ranEnemyIdx < 0) // 적 선택
             { 
-                enemies = GameObject.FindGameObjectsWithTag("Enemy");
-                if (enemies.Length < 1)
-                    return;
-                ranEnemyIdx = Random.Range(0, enemies.Length);
+                ranEnemyIdx = Random.Range(0, enemies.Count);
             }
             
             if (enemies[ranEnemyIdx] == null) // 조준 도중에 적이 파괴됐다면
@@ -470,6 +550,7 @@ public class TankCtrl : MonoBehaviour
                 ranEnemyIdx = -1;
                 return;
             }
+            
             Quaternion a_TargetDir = Quaternion.LookRotation(enemies[ranEnemyIdx].transform.position - transform.position);
             turret_Obj.transform.rotation = Quaternion.Slerp(turret_Obj.transform.rotation, a_TargetDir, Time.deltaTime * 10.0f);
             
@@ -479,7 +560,7 @@ public class TankCtrl : MonoBehaviour
 
             if (actionTimer <= 0.0f) // 시즈모드On 연출타임이 끝나면 미사일 발사
             { 
-                missile = Instantiate(missilePrefab, fire_Pos.transform.position, turret_Obj.transform.rotation);
+                missile = Instantiate(missilePrefab, fire_Pos.transform.position, Quaternion.identity);
                 missile.GetComponent<MissileCtrl>().target_Obj = enemies[ranEnemyIdx];
                 Instantiate(turret_Explo, fire_Pos.transform.position, Quaternion.identity);
 
@@ -514,7 +595,7 @@ public class TankCtrl : MonoBehaviour
 
     IEnumerator ShootImp()
     {
-        while(true)
+        while (true)
         {
             if (missile == null)
             {
@@ -744,22 +825,6 @@ public class TankCtrl : MonoBehaviour
     }
     #endregion
 
-    public void OnTriggerEnter(Collider coll)
-    {
-        if(coll.name.Contains("Enemy_Base") == true)
-        {
-            SetDestination(this.transform.position);
-        }
-    }
-
-    public void OnTriggerExit(Collider coll)
-    {
-        if (coll.name.Contains("Enemy_Base") == true)
-        {
-            SetDestination(beginTarPos.position);
-        }
-    }
-
     #region 탱크 사망처리 부분
     // -------------- 탱크의 사망을 감지하는 함수
     private void MonitorTankDie()
@@ -767,11 +832,14 @@ public class TankCtrl : MonoBehaviour
         // 현재 HP가 0 이하인 경우
         if (curHp <= 0)
         {
+            this.transform.rotation = Quaternion.Euler(0, 0, 0);
+            turret_Obj.transform.rotation = this.transform.rotation;
+            this.GetComponent<NavMeshAgent>().enabled = false;
             // ---- 폭발 오디오 재생하는 부분
             // 추후 경로 오류 발생시 path만 수정!
-            string resorcepath = "SoundEffect/ExpSound1.mp3";
-            AudioClip audio = (AudioClip)Resources.Load(resorcepath);
-            this.GetComponent<AudioSource>().PlayOneShot(audio);
+            //string resorcepath = "SoundEffect/Explosion01.ogg";
+            //AudioClip audio = Resources.Load(resorcepath) as AudioClip;
+            //Camera.main.GetComponent<AudioSource>().PlayOneShot(audio);
 
             // ----- 탱크를 오브젝트 풀로 돌리는 부분
             UnitObjPool.Inst.ReturnObj(this.gameObject, (int)m_Type);

@@ -56,7 +56,6 @@ public class UnitObjPool : MonoBehaviour
     {
         GameObject newObj = Instantiate(unitObjPrefab[objKind], this.transform);
         newObj.SetActive(false);
-        newObj.GetComponent<NavMeshAgent>().enabled = true;
         return newObj;
     }
 
@@ -74,20 +73,21 @@ public class UnitObjPool : MonoBehaviour
             activeTankCount[objKind]++;
             var obj = Inst.tankPool[objKind].Dequeue();
             obj.transform.SetParent(null);
+            obj.GetComponent<NavMeshAgent>().enabled = true;
             obj.transform.position = setPos;
-            obj.gameObject.SetActive(true);
-            StartCoroutine(obj.gameObject.GetComponent<TankCtrl>().SetDestinationCo());
+            obj.SetActive(true);
+            StartCoroutine(obj.GetComponent<TankCtrl>().SetDestinationCo());
             return obj;
         }
         
         // 풀에 유닛이 존재하지 않을 경우 새로 생산한다.
         else
         {
-            activeTankCount[objKind]++;
             var newObj = Inst.CreateNewObj(objKind);
             newObj.transform.SetParent(null);
             newObj.transform.position = setPos;
             newObj.gameObject.SetActive(true);
+            activeTankCount[objKind]++;
             return newObj;
         }
     }

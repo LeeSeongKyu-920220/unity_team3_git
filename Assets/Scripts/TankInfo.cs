@@ -33,7 +33,7 @@ public class TankInfo
                     atk = 10.0f;
                     attRate = 3.0f;
                     skillCool = 5.0f;
-                    attRange = 10.0f;
+                    attRange = 15.0f;
                     break;
                 }
             case TankType.Speed:
@@ -43,7 +43,7 @@ public class TankInfo
                     atk = 2.0f;
                     attRate = 1.5f;
                     skillCool = 8.0f;
-                    attRange = 4.0f;
+                    attRange = 10.0f;
                     break;
                 }
             case TankType.Repair:
@@ -53,7 +53,7 @@ public class TankInfo
                     atk = 8.0f;
                     attRate = 3.0f;
                     skillCool = 5.0f;
-                    attRange = 7.0f;
+                    attRange = 15.0f;
                     break;
                 }
             case TankType.Solid:
@@ -63,7 +63,7 @@ public class TankInfo
                     atk = 3.0f;
                     attRate = 4.0f;
                     skillCool = 10.0f;
-                    attRange = 7.0f;
+                    attRange = 15.0f;
                     break;
                 }
             case TankType.Cannon: // 멀리까지 공격이 가능한 차량

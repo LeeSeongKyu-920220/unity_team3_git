@@ -9,6 +9,7 @@ public class BulletCtrl : MonoBehaviour
     float speed = 20.0f;
     Vector3 target_Pos = Vector3.zero;
     Vector3 dir = Vector3.zero;
+    
 
     void Start()
     {
@@ -26,6 +27,9 @@ public class BulletCtrl : MonoBehaviour
         target_Pos = target_Obj.transform.position;
         dir = target_Pos - this.transform.position;
         transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
+        Quaternion lookRotation = Quaternion.LookRotation(dir);
+        Vector3 rotation = Quaternion.Lerp(this.transform.rotation, lookRotation, Time.deltaTime * 10.0f).eulerAngles;
+        this.transform.rotation = Quaternion.Euler(0f, rotation.y, 0f);
 
         Destroy(gameObject, 2.0f);
     }
