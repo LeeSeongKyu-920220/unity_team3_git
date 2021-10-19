@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class VirtualObjMove : MonoBehaviour
 {
@@ -63,7 +64,19 @@ public class VirtualObjMove : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    MakeRealObj();
+                    bool isLeft = false;
+                    if (hit.collider.gameObject.name == "AbleZoneLeft")
+                    {
+                        Debug.Log("left 충돌");
+                        isLeft = true;
+                        MakeRealObj(isLeft);
+                    }
+                    else if (hit.collider.gameObject.name == "AbleZoneRight")
+                    {
+                        Debug.Log("right 충돌");
+                        isLeft = false;
+                        MakeRealObj(isLeft);
+                    }
                     unitPlacing.placingState = UnitPlacingState.PRIMARY;        // 상태를 다시 원래대로
                 }
             }            
@@ -126,13 +139,13 @@ public class VirtualObjMove : MonoBehaviour
     //======================================================================================== ↓ 사용자 정의 함수 부분
     //---------------------------------------------------------------------------- MakeRealObj()
     //--------- 클릭시 진짜 오브젝트를 생성해주고 이 오브젝트는 파괴한다.
-    private void MakeRealObj()
+    private void MakeRealObj(bool isLeft)
     {
         Destroy(this.gameObject.GetComponent<Rigidbody>());     // 원래꺼가 밀어내는 거 방지를 위해 가상 오브젝트의 리지드 바디 삭제        
         Vector3 pos = this.transform.position;                  // 가상 오브젝트의 위치에 생성
         pos.y = 1.0f;                                           // 맵과 위치 맞춰줌
 
-        UnitObjPool.Inst.GetObj(objKind, pos);             // 진짜 오브젝트 생산 (풀에서 꺼내옴)
+        UnitObjPool.Inst.GetObj(objKind, pos, isLeft);             // 진짜 오브젝트 생산 (풀에서 꺼내옴)
 
         Destroy(this.gameObject, 0.08f);            // 약간 딜레이 주고 배치용 오브젝트 삭제        
     }

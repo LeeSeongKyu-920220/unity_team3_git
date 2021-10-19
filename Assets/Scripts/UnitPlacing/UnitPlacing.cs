@@ -100,8 +100,6 @@ public class UnitPlacing : MonoBehaviour
     //--------- 버튼을 모니터 해주는 함수
     private void MonitorButton()
     {
-
-
         // 인덱스를 위한 변수 선언
         int normal = 0, speed = 1, repair = 2, solid = 3, cannon = 4;
 
