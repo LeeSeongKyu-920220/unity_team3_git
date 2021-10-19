@@ -77,7 +77,7 @@ public class UnitLoad : MonoBehaviour
         userID = 1;             // 임시 유저 ID 할당 나중에 플레이어 값을 가져와야함
                                 // 글로벌 변수의 ID로 대체해야한다.
 
-        
+
 
         //// !!!!!! 글로벌 변수와 컬럼이 완벽히 일치되면 주석을 풀어주세요!!!
         //// ↓↓↓↓↓↓↓↓ 글로벌에서부터 아이템의 사용 횟수를 받아오는 함수 실행 
@@ -214,6 +214,9 @@ public class UnitLoad : MonoBehaviour
 
                 else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_3)
                     UnitObjPool.Inst.tankCountLimit[3] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
+
+                else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_4)
+                    UnitObjPool.Inst.tankCountLimit[4] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
             }
         }
     }
