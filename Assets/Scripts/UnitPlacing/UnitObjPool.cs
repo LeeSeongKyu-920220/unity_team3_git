@@ -76,11 +76,13 @@ public class UnitObjPool : MonoBehaviour
 
             if (isLeft == true)
             {
-                obj.GetComponent<NavMeshAgent>().areaMask = (1 << 0) | (1 << 3);
+                obj.GetComponent<NavMeshAgent>().areaMask = (1 << 0) | (1 << 2);
+                Debug.Log(obj.GetComponent<NavMeshAgent>().areaMask);
             }
             else if (isLeft == false)
             {
-                obj.GetComponent<NavMeshAgent>().areaMask = (1 << 0) | (1 << 4);                
+                obj.GetComponent<NavMeshAgent>().areaMask = (1 << 0) | (1 << 3);
+                Debug.Log(obj.GetComponent<NavMeshAgent>().areaMask);
             }
 
             obj.GetComponent<NavMeshAgent>().enabled = true;
