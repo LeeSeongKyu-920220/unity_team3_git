@@ -45,7 +45,7 @@ public class SkillRangeCtrl : MonoBehaviour
                 
         }
 
-        Destroy(this.gameObject);
+        Destroy(this.gameObject,3f);
     }
 
     #region ---------- 사정거리 충돌 체크

@@ -79,6 +79,16 @@ public class TankCtrl : MonoBehaviour
     public GameObject missilePrefab;
     public GameObject barrier;
     // 유닛 특성 관련 변수
+
+    // 탱크 움직임 오디오소스
+    AudioSource m_MvSource;
+
+    private void Awake()
+    {
+        // 이 탱크의 오디오소스 할당
+        m_MvSource = this.GetComponent<AudioSource>();
+    }
+
     void Start()
     {
         // 탱크 기본정보 받아오기
@@ -93,6 +103,7 @@ public class TankCtrl : MonoBehaviour
         Init();
         enemies = new List<GameObject>();
         //cannon_Obj.transform.eulerAngles = new Vector3(-45, 0, 0);
+
     }
 
     void Update()
