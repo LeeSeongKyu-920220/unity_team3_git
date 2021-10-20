@@ -210,19 +210,20 @@ public class UnitLoad : MonoBehaviour
 
                 }
 
-                else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_1)
-                    UnitObjPool.Inst.tankCountLimit[1] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
 
-                else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_2)
-                    UnitObjPool.Inst.tankCountLimit[2] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
-
-                else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_3)
-                    UnitObjPool.Inst.tankCountLimit[3] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
-
-                else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_4)
-                    UnitObjPool.Inst.tankCountLimit[4] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
             }
+
+            else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_1)
+                UnitObjPool.Inst.tankCountLimit[1] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
+
+            else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_2)
+                UnitObjPool.Inst.tankCountLimit[2] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
+
+            else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_3)
+                UnitObjPool.Inst.tankCountLimit[3] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
+
+            else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_4)
+                UnitObjPool.Inst.tankCountLimit[4] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
         }
     }
-
 }
