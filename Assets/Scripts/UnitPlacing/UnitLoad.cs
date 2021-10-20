@@ -76,10 +76,15 @@ public class UnitLoad : MonoBehaviour
 
         //// !!!!!! 글로벌 변수와 컬럼이 완벽히 일치되면 주석을 풀어주세요!!!
         //// ↓↓↓↓↓↓↓↓ 글로벌에서부터 아이템의 사용 횟수를 받아오는 함수 실행 
-        LoadAttackUnit();
+        //LoadAttackUnit();
 
         // 유저의 유닛 정보를 받아온다.
         //StartCoroutine(GetUserUnitInfo_Co());
+    }
+
+    void Start()
+    {
+        LoadAttackUnit();
     }
 
     // 유저의 유닛 정보를 DB에서 받아온다.
@@ -199,7 +204,13 @@ public class UnitLoad : MonoBehaviour
                 // ↓↓↓↓↓↓ 이거 꼭 확인해야함
                 // UnitKind 의 Unit_0 == NormalTank 라면....
                 if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_0)
+                {
+                    Debug.Log(UnitObjPool.Inst);
+                    Debug.Log(UnitObjPool.Inst.tankCountLimit[0]);
                     UnitObjPool.Inst.tankCountLimit[0] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
+                    
+                }
+                    
 
                 else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_1)
                     UnitObjPool.Inst.tankCountLimit[1] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;

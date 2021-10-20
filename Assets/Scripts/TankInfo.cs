@@ -50,7 +50,7 @@ public class TankInfo
                 {
                     maxHp = 80.0f;
                     speed = 5.0f;
-                    atk = 8.0f;
+                    atk = 5.0f;
                     attRate = 3.0f;
                     skillCool = 5.0f;
                     attRange = 15.0f;
@@ -59,8 +59,8 @@ public class TankInfo
             case TankType.Solid:
                 {
                     maxHp = 200.0f;
-                    speed = 2.0f;
-                    atk = 3.0f;
+                    speed = 3.0f;
+                    atk = 5.0f;
                     attRate = 4.0f;
                     skillCool = 10.0f;
                     attRange = 15.0f;

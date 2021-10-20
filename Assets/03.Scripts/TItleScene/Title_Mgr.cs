@@ -240,7 +240,6 @@ public class Title_Mgr : MonoBehaviour
             float UnitMoveSpeed = N["UnitList"][i]["UnitAttack"].AsFloat;
             int Unitprice = N["UnitList"][i]["UnitPrice"].AsInt;
             int UnitUprice = N["UnitList"][i]["UnitUpPrice"].AsInt;
-            int UnitRange = N["UnitList"][i]["UnitRange"].AsInt;
 
             a_UserUt = new UserUnit();
             a_UserUt.m_UnitNo = itemNo;
@@ -258,7 +257,6 @@ public class Title_Mgr : MonoBehaviour
             a_UserUt.m_Speed = UnitMoveSpeed;
             a_UserUt.m_Price = Unitprice;
             a_UserUt.m_UpPrice = UnitUprice;
-            a_UserUt.m_Range = UnitRange;
 
             if (isAttack == 0) // 방어일 경우
             {
