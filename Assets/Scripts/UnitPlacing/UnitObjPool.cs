@@ -20,7 +20,12 @@ public class UnitObjPool : MonoBehaviour
 
     private void Awake()
     {
-        Inst = this;     // 전역변수처럼 사용하기 위한 캐싱       
+        Inst = this;     // 전역변수처럼 사용하기 위한 캐싱   
+        
+        for(int ii = 0; ii < tankCountLimit.Length; ii++)
+        {
+            tankCountLimit[ii] = 3;
+        }
     }
 
     private void Start()
