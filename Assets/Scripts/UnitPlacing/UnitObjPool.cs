@@ -30,6 +30,10 @@ public class UnitObjPool : MonoBehaviour
 
     private void Start()
     {
+        // 테스트용 탱크 수 입력
+        TestTankImport();
+
+
         // 각 유닛 미리 생산해서 풀에 추가
         for (int i = 0; i < unitObjPrefab.Length; i++)
         {
@@ -122,5 +126,13 @@ public class UnitObjPool : MonoBehaviour
         activeTankCount[objKind]--;
         tank.transform.SetParent(Inst.transform);
         Inst.tankPool[objKind].Enqueue(tank);
+    }
+
+    private void TestTankImport()
+    {
+        for (int i = 0; i < tankCountLimit.Length; i++)
+        {
+            tankCountLimit[i] = 3;
+        }
     }
 }
