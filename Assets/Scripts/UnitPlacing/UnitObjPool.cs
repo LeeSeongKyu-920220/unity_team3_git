@@ -55,6 +55,9 @@ public class UnitObjPool : MonoBehaviour
     public GameObject CreateNewObj(int objKind)
     {
         GameObject newObj = Instantiate(unitObjPrefab[objKind], this.transform);
+        int rand = Random.Range(0, 10);
+        newObj.GetComponent<TankCtrl>().m_TankNumber = rand;
+        Debug.Log(newObj.GetComponent<TankCtrl>().m_TankNumber);
         newObj.SetActive(false);
         return newObj;
     }
@@ -77,12 +80,10 @@ public class UnitObjPool : MonoBehaviour
             if (isLeft == true)
             {
                 obj.GetComponent<NavMeshAgent>().areaMask = (1 << 0) | (1 << 4);
-                Debug.Log(obj.GetComponent<NavMeshAgent>().areaMask);
             }
             else if (isLeft == false)
             {
                 obj.GetComponent<NavMeshAgent>().areaMask = (1 << 0) | (1 << 3);
-                Debug.Log(obj.GetComponent<NavMeshAgent>().areaMask);
             }
 
             obj.GetComponent<NavMeshAgent>().enabled = true;

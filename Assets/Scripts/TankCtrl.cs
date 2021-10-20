@@ -83,6 +83,8 @@ public class TankCtrl : MonoBehaviour
     // 탱크 움직임 오디오소스
     AudioSource m_MvSource;
 
+    [HideInInspector] public int m_TankNumber = 0;
+
     private void Awake()
     {
         // 이 탱크의 오디오소스 할당

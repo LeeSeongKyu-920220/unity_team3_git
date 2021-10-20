@@ -67,13 +67,11 @@ public class VirtualObjMove : MonoBehaviour
                     bool isLeft = false;
                     if (hit.collider.gameObject.name == "AbleZoneLeft")
                     {
-                        Debug.Log("left 충돌");
                         isLeft = true;
                         MakeRealObj(isLeft);
                     }
                     else if (hit.collider.gameObject.name == "AbleZoneRight")
                     {
-                        Debug.Log("right 충돌");
                         isLeft = false;
                         MakeRealObj(isLeft);
                     }
