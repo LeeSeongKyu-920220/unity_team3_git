@@ -204,13 +204,7 @@ public class UnitLoad : MonoBehaviour
                 // ↓↓↓↓↓↓ 이거 꼭 확인해야함
                 // UnitKind 의 Unit_0 == NormalTank 라면....
                 if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_0)
-                {
-                    Debug.Log(UnitObjPool.Inst);
-                    Debug.Log(UnitObjPool.Inst.tankCountLimit[0]);
                     UnitObjPool.Inst.tankCountLimit[0] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
-                    
-                }
-                    
 
                 else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_1)
                     UnitObjPool.Inst.tankCountLimit[1] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
