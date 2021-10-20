@@ -50,7 +50,6 @@ public class UnitInfo
  ====================================================================================================
  서버에서 정보를 받아오는 것도 방법이지만
  글로벌 변수에 unit Usable(==unitCount) 가 있는 경우 그것을 받아와도 된다.
-
  아직 UserItem 테이블의 정보를 받아오는 스크립트가 없으므로 부득이하게 만들었다.
  만약 테이블의 정보를 받아온다면 그것을 UnitPool의 int[]인 UnitCountLimit 변수에 테이블 컬럼인 KindOfItem과 
  인덱스를 일치시켜주면 된다. (만약 KindOfItem 이 1이라면 int[0]에 할당한다.) 유닛 종류는 최대 5종이기 때문
@@ -204,7 +203,12 @@ public class UnitLoad : MonoBehaviour
                 // ↓↓↓↓↓↓ 이거 꼭 확인해야함
                 // UnitKind 의 Unit_0 == NormalTank 라면....
                 if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_0)
+                {
+                    Debug.Log(UnitObjPool.Inst);
+                    Debug.Log(UnitObjPool.Inst.tankCountLimit[0]);
                     UnitObjPool.Inst.tankCountLimit[0] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
+
+                }
 
                 else if (GlobalValue.m_AttUnitUserItem[i].m_unitkind == Unitkind.Unit_1)
                     UnitObjPool.Inst.tankCountLimit[1] = GlobalValue.m_AttUnitUserItem[i].ItemUsable;
